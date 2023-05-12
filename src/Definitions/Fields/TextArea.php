@@ -2,7 +2,10 @@
 
 namespace Surveyforge\Surveyforge\Definitions\Fields;
 
-class TextArea extends AbstractField
-{
+use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\CanBeUsedOnForms;
+use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\FieldType;
 
+class TextArea extends AbstractTextField implements CanBeUsedOnForms
+{
+    protected string $type = FieldType::TEXT_AREA;
 }

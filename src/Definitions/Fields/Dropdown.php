@@ -2,11 +2,12 @@
 
 namespace Surveyforge\Surveyforge\Definitions\Fields;
 
+use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\CanBeUsedOnForms;
 use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\FieldType;
 
-class MultiSelect extends AbstractOptionsField
+class Dropdown extends AbstractOptionsField implements CanBeUsedOnForms
 {
-    protected string $type = FieldType::MULTI_SELECT;
+    protected string $type = FieldType::DROPDOWN;
     protected string $name;
 
     public function __construct($fieldId, $name)

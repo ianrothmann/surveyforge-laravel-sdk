@@ -2,7 +2,15 @@
 
 namespace Surveyforge\Surveyforge\Definitions\Fields;
 
-class Likert extends AbstractField
-{
+use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\FieldType;
 
+class Likert extends AbstractOptionsField
+{
+    protected string $type = FieldType::LIKERT;
+
+    public function addOption($name, $optionId = null, $description=null)
+    {
+        $this->createOption($name, $optionId, $description);
+        return $this;
+    }
 }
