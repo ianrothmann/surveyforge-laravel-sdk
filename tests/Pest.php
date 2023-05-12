@@ -1,5 +1,5 @@
 <?php
 
-use VendorName\Skeleton\Tests\TestCase;
+use Surveyforge\Surveyforge\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

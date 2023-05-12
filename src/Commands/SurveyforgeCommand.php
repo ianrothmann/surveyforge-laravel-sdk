@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Surveyforge\Surveyforge\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class SurveyforgeCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'surveyforge-laravel';
 
     public $description = 'My command';
 

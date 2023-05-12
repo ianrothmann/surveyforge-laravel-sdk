@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "ianrothmann/surveyforge-laravel",
+    "description": "A Laravel SDK to build and deploy surveys to a Surveyforge server.",
     "keywords": [
-        ":vendor_name",
+        "ianrothmann",
         "laravel",
-        ":package_slug"
+        "surveyforge-laravel"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/ianrothmann/surveyforge-laravel",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Ian Rothmann",
+            "email": "ian@conceptsphere.com",
             "role": "Developer"
         }
     ],
@@ -23,25 +23,20 @@
     "require-dev": {
         "laravel/pint": "^1.0",
         "nunomaduro/collision": "^7.9",
-        "nunomaduro/larastan": "^2.0.1",
         "orchestra/testbench": "^8.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-arch": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0",
-        "spatie/laravel-ray": "^1.26"
+        "pestphp/pest-plugin-laravel": "^2.0"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Surveyforge\\Surveyforge\\": "src/",
+            "Surveyforge\\Surveyforge\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "Surveyforge\\Surveyforge\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -61,10 +56,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Surveyforge\\Surveyforge\\SurveyforgeServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "Surveyforge": "Surveyforge\\Surveyforge\\Facades\\Surveyforge"
             }
         }
     },
