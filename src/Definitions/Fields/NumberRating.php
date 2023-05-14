@@ -22,4 +22,14 @@ class NumberRating extends AbstractField
         $this->maxLabel = $maxLabel;
         return $this;
     }
+
+    public function toArray()
+    {
+        $definition=parent::toArray();
+        $definition['min']=$this->min;
+        $definition['min_label']=$this->minLabel;
+        $definition['max']=$this->min;
+        $definition['max_label']=$this->maxLabel;
+        return $definition;
+    }
 }

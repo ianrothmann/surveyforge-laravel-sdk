@@ -8,6 +8,13 @@ use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\FieldType;
 class RadioGroup extends AbstractOptionsField implements CanBeUsedOnForms
 {
     protected string $type = FieldType::RADIO_GROUP;
+    protected ?string $name;
+
+    public function __construct($fieldId, $name)
+    {
+        parent::__construct($fieldId);
+        $this->name = $name;
+    }
 
     public function addOption($name, $optionId = null, $description=null)
     {

@@ -8,7 +8,7 @@ use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\FieldType;
 class Dropdown extends AbstractOptionsField implements CanBeUsedOnForms
 {
     protected string $type = FieldType::DROPDOWN;
-    protected string $name;
+    protected ?string $name;
 
     public function __construct($fieldId, $name)
     {
@@ -21,4 +21,5 @@ class Dropdown extends AbstractOptionsField implements CanBeUsedOnForms
         $this->createOption($name, $optionId, $description);
         return $this;
     }
+
 }

@@ -5,8 +5,9 @@ namespace Surveyforge\Surveyforge\Definitions\Fields;
 abstract class AbstractTextField extends AbstractField
 {
 
-    protected string $name;
+    protected ?string $name;
     protected string $hint='';
+    protected string $placeholder='';
     protected string $validator='';
     protected $maxChars;
     protected $minChars;
@@ -19,7 +20,15 @@ abstract class AbstractTextField extends AbstractField
 
     public function toArray()
     {
-        // TODO: Implement toArray() method.
+        $definition=parent::toArray();
+        $definition['name']=$this->name;
+        $definition['hint']=$this->hint;
+        $definition['placeholder']=$this->placeholder;
+        $definition['validator']=$this->validator;
+        $definition['max_chars']=$this->maxChars;
+        $definition['min_chars']=$this->minChars;
+
+        return $definition;
     }
 
     public function validateWith($validator)

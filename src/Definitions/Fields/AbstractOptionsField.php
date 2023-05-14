@@ -4,7 +4,7 @@ namespace Surveyforge\Surveyforge\Definitions\Fields;
 
 use Surveyforge\Surveyforge\Definitions\Builders\AbstractBuilder;
 
-abstract class AbstractOptionsField extends AbstractBuilder
+abstract class AbstractOptionsField extends AbstractField
 {
 
     protected $fieldId;
@@ -12,7 +12,7 @@ abstract class AbstractOptionsField extends AbstractBuilder
 
     public function __construct($fieldId)
     {
-        $this->fieldId=$fieldId;
+        parent::__construct($fieldId);
         $this->options=collect();
     }
 
@@ -37,6 +37,8 @@ abstract class AbstractOptionsField extends AbstractBuilder
 
     public function toArray()
     {
-        // TODO: Implement toArray() method.
+        $definition=parent::toArray();
+        $definition['options']=$this->options->toArray();
+        return $definition;
     }
 }
