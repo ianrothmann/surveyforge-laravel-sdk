@@ -7,7 +7,13 @@ class HtmlContent extends AbstractContent
     protected string $type = self::HTML;
 
     protected $title;
-    protected string $html;
+    protected $html;
+
+    public function __construct($html=null)
+    {
+        parent::__construct();
+        $this->html=$html;
+    }
 
     public function withHtml($html)
     {

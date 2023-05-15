@@ -17,9 +17,9 @@ class SurveyforgeServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('surveyforge-laravel')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_surveyforge-laravel_table')
-            ->hasCommand(SurveyforgeCommand::class);
+            ->hasConfigFile('surveyforge');
+//            ->hasViews()
+//            ->hasMigration('create_surveyforge-laravel_table')
+//            ->hasCommand(SurveyforgeCommand::class);
     }
 }

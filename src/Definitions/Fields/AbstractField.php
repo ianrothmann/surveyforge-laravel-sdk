@@ -26,12 +26,18 @@ abstract class AbstractField extends AbstractBuilder
         return $this;
     }
 
+    protected function buildAnswerObject()
+    {
+        return null;
+    }
+
     public function toArray()
     {
         $definition=[
             'field_id'=>$this->fieldId,
             'definition_type'=>$this->definitionType,
-            'field_type'=>$this->type
+            'field_type'=>$this->type,
+            'answer_object'=>$this->buildAnswerObject(),
         ];
 
         if($this instanceof CanBeUsedOnForms){

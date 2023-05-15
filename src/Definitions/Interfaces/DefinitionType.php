@@ -10,4 +10,6 @@ interface DefinitionType
     CONST SECTION= 'section';
     CONST SURVEY= 'survey';
     CONST CONTENT= 'content';
+    CONST THEME= 'theme';
+    CONST CONDITION= 'condition';
 }

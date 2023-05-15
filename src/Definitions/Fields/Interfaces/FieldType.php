@@ -16,4 +16,8 @@ interface FieldType
     const NUMBER_RATING = 'number_rating';
     const MULTI_SELECT = 'multi_select';
     const OPTIONS = 'options';
+
+    const PHONE = 'phone';
+    const COUNTRY = 'country';
+    const URL = 'url';
 }

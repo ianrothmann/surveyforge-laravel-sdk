@@ -3,6 +3,8 @@
 namespace Surveyforge\Surveyforge\Definitions\Fields;
 
 use Surveyforge\Surveyforge\Definitions\Builders\AbstractBuilder;
+use Surveyforge\Surveyforge\Definitions\Condition\Condition;
+use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\HasMultipleAnswers;
 
 abstract class AbstractOptionsField extends AbstractField
 {
@@ -16,7 +18,7 @@ abstract class AbstractOptionsField extends AbstractField
         $this->options=collect();
     }
 
-    protected function createOption($name, $optionId=null, $description=null)
+    protected function createOption($name, $optionId=null, $description=null, Condition $condition=null)
     {
         if($optionId===null){
             $optionId=($this->options->keys()->max ?? 0) + 1;
@@ -26,6 +28,7 @@ abstract class AbstractOptionsField extends AbstractField
             'option_id'=>$optionId,
             'name'=> $name,
             'order'=>$this->options->count()+1,
+            'condition'=>$condition
         ];
 
         if($description!==null){
@@ -35,10 +38,29 @@ abstract class AbstractOptionsField extends AbstractField
         $this->options[]=$def;
     }
 
+    protected function buildAnswerObject()
+    {
+        if($this instanceof HasMultipleAnswers){
+            return $this->options->keyBy('option_id')->map(function($option){
+                return null;
+            })->toArray();
+        }
+
+        return null;
+
+    }
+
     public function toArray()
     {
         $definition=parent::toArray();
-        $definition['options']=$this->options->toArray();
+        $definition['options']=$this->options
+            ->map(function($option){
+                if($option['condition']){
+                    $option['condition']=$option['condition']->build();
+                }
+                return $option;
+            })
+            ->toArray();
         return $definition;
     }
 }

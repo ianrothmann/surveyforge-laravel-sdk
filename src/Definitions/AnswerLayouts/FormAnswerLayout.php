@@ -3,6 +3,7 @@
 namespace Surveyforge\Surveyforge\Definitions\AnswerLayouts;
 
 use Surveyforge\Surveyforge\Definitions\Fields\AbstractField;
+use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\CanBeUsedOnForms;
 
 class FormAnswerLayout extends AbstractAnswerLayout
 {
@@ -16,8 +17,11 @@ class FormAnswerLayout extends AbstractAnswerLayout
         return $this;
     }
 
-    public function withField(AbstractField $field, $colSpan=1, $rowSpan=1)
+    public function addField(AbstractField $field, $colSpan=1, $rowSpan=1)
     {
+        if(!$field instanceof CanBeUsedOnForms){
+            throw new \Exception(get_class($field).' cannot be used on forms.');
+        }
         $this->fields[] = [
             'field'=>$field,
             'colSpan'=>$colSpan,

@@ -4,8 +4,9 @@ namespace Surveyforge\Surveyforge\Definitions\Fields;
 
 use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\CanBeUsedOnForms;
 use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\FieldType;
+use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\HasMultipleAnswers;
 
-class CheckboxGroup extends AbstractOptionsField implements CanBeUsedOnForms
+class CheckboxGroup extends AbstractOptionsField implements CanBeUsedOnForms, HasMultipleAnswers
 {
     protected string $type = FieldType::CHECKBOX_GROUP;
 
