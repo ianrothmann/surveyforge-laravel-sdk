@@ -16,9 +16,9 @@ class Dropdown extends AbstractOptionsField implements CanBeUsedOnForms
         $this->name = $name;
     }
 
-    public function addOption($name, $optionId = null, $description=null)
+    public function addOption($name, $optionId = null, $description=null, $showWhen = null)
     {
-        $this->createOption($name, $optionId, $description);
+        $this->createOption($name, $optionId, $description, $this->createCondition($showWhen));
         return $this;
     }
 

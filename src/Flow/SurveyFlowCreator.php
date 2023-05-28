@@ -2,18 +2,23 @@
 
 namespace Surveyforge\Surveyforge\Flow;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 class SurveyFlowCreator
 {
 
-    protected $surveyDefinition;
+    protected $definition;
     protected $flowDefinition;
 
     protected $answerObject;
     protected $sections;
     protected $conditions;
+    protected $warnings=[
+        'conditions'=>[],
+        'answers'=>[],
+    ];
 
     public function __construct(array $surveyDefinition)
     {
@@ -23,7 +28,18 @@ class SurveyFlowCreator
         $this->sections=collect();
         $this->conditions=collect();
         $this->flowDefinition=$this->extractFlow();
-        dd($this->sections, $this->flowDefinition, $this->conditions, $this->answerObject);
+        $this->validate();
+    }
+
+    public function get()
+    {
+        return collect([
+            'sections' => $this->sections->toArray(),
+            'flow' => $this->flowDefinition->toArray(),
+            'conditions' => $this->conditions->toArray(),
+            'answer_object' => $this->answerObject->toArray(),
+            'warnings' => $this->warnings
+        ]);
     }
 
     protected function extractFlow()
@@ -85,13 +101,43 @@ class SurveyFlowCreator
         $question['section_id']=$sectionId;
         $question['conditions']=$this->combineConditions([$parentConditionId,$conditionId]);
         unset($question['condition']);
+
+        $question=$this->addAnswerReferencesToQuestion($question->toArray());
+
         $flow->add($question);
         return $flow;
     }
 
+    protected function addAnswerReferencesToQuestion(array $question)
+    {
+        $questionId=$question['question_id'] ?? null;
+        if($question['answer']['fields'] ?? null){
+            $question['answer']['fields']=collect($question['answer']['fields'])->map(function($field) use($questionId){
+                if($field['field']['field_id'] ?? null){
+                    $fieldRef=$questionId.'.'.$field['field']['field_id'];
+                    $field['field']['answer_ref']=$fieldRef;
+                    //Now map option refs
+                    if(($field['field']['multiple'] ?? false) && ($field['field']['options'] ?? null)){
+                        $field['field']['options']=collect($field['field']['options'])->map(function($option) use($fieldRef){
+                            if($option['option_id'] ?? null){
+                                $option['answer_ref']=$fieldRef.'.'.$option['option_id'];
+                            }
+                            return $option;
+                        })->toArray();
+                    }
+                }
+                return $field;
+            })->toArray();
+        }
+
+        return $question;
+    }
+
     protected function registerAnswerObject($answerObject)
     {
-        $this->answerObject->add($answerObject);
+        collect($answerObject)->each(function($fieldObject, $questionId){
+            $this->answerObject->put($questionId,$fieldObject);
+        });
     }
 
     protected function combineConditions($conditionArray)
@@ -109,7 +155,7 @@ class SurveyFlowCreator
             }
         });
 
-        return $flow;
+        return collect($flow);
     }
 
     protected function registerCondition($condition)
@@ -133,5 +179,43 @@ class SurveyFlowCreator
                 }
             }
             unset($value);
+    }
+
+    protected function validate()
+    {
+        $this->checkConditionReferences();
+        $this->checkAnswerReferences();
+    }
+
+    protected function checkConditionReferences()
+    {
+        $answers=$this->answerObject->toArray();
+        $this->conditions->each(function($condition, $conditionId) use($answers){
+            collect($condition['columns'])->each(function($column) use($answers,$conditionId){
+                if(!Arr::has($answers,$column)){
+                    $this->warnings['conditions'][]=[
+                        'condition_id'=>$conditionId,
+                        'column'=>$column,
+                        'message' => $column.' not found'
+                    ];
+                }
+            });
+        });
+    }
+
+    protected function checkAnswerReferences()
+    {
+        $flow=$this->flowDefinition;
+        $answers=$this->answerObject->toArray();
+        array_walk_recursive($flow, function($answerRef, $key) use($answers){
+            if($key==='answer_ref'){
+                if(!Arr::has($answers,$answerRef)){
+                    $this->warnings['answers'][]=[
+                        'answer_ref'=>$answerRef,
+                        'message' => $answerRef.' not found'
+                    ];
+                }
+            }
+        });
     }
 }

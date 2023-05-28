@@ -74,6 +74,8 @@ abstract class AbstractQuestion extends AbstractBuilder
 
         $definition['type']=$this->type;
 
+        $definition['question_id']=$this->questionId;
+
         $definition['question']=$this->questionContent ? $this->questionContent->build() : null;
 
         $builtAnswer=$this->answer->build();
@@ -87,7 +89,7 @@ abstract class AbstractQuestion extends AbstractBuilder
         $definition['answer']=$builtAnswer;
 
         $definition['instructions']=$this->instructions->map(function(AbstractContent $content){
-            $content->build();
+            return $content->build();
         })->toArray();
 
         $definition['condition']=$this->condition ? $this->condition->build() : null;

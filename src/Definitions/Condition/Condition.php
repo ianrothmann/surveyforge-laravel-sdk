@@ -2,6 +2,7 @@
 
 namespace Surveyforge\Surveyforge\Definitions\Condition;
 
+use Illuminate\Support\Str;
 use Surveyforge\Surveyforge\Definitions\Builders\AbstractBuilder;
 use Surveyforge\Surveyforge\Definitions\Interfaces\DefinitionType;
 
@@ -59,6 +60,7 @@ class Condition extends AbstractBuilder
     {
         if($value===null && !$column instanceof \Closure)
         {
+            $column=$this->inferFullColumnName($column);
             $this->addColumn($column);
             $value=$operatorOrValueOrFunction;
             $operatorOrValueOrFunction="=";
@@ -70,6 +72,7 @@ class Condition extends AbstractBuilder
             ];
         }elseif($value!==null && !$column instanceof \Closure)
         {
+            $column=$this->inferFullColumnName($column);
             $this->addColumn($column);
             $queryDefinition=[
                 'boolean'=>$boolean,
@@ -90,6 +93,21 @@ class Condition extends AbstractBuilder
         $this->queryDefinition[]=$queryDefinition;
 
         return $queryDefinition;
+    }
+
+    /**
+     * This function checks if dot notation was used. If not, it will add the question Id to the column Id, assuming they were the same.
+     * @param $column
+     * @return void
+     */
+    protected function inferFullColumnName($column)
+    {
+        if(!Str::contains($column,'.'))
+        {
+            $column=$column.'.'.$column;
+        }
+
+        return $column;
     }
 
     protected function addColumn($column)

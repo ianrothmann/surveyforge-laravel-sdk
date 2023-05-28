@@ -2,6 +2,7 @@
 
 namespace Surveyforge\Surveyforge\Definitions\Predefined\Surveys;
 
+use Surveyforge\Surveyforge\Definitions\AnswerLayouts\SingleAnswerLayout;
 use Surveyforge\Surveyforge\Definitions\Builders\AbstractBuilder;
 use Surveyforge\Surveyforge\Definitions\Condition\Condition;
 use Surveyforge\Surveyforge\Definitions\Content\HtmlContent;
@@ -20,25 +21,32 @@ class DemoSurvey extends AbstractPredefinedBuilder
     public static function get(): Survey
     {
         $section1=(new Section())
-            ->doNotShowWhen(function(Condition $condition){
-                $condition->where('dogs','<=','1');
-            })
             ->withTitle("About yourself")
             ->addInstructionHtml('We would like to get to know you.')
             ->addQuestion((new VerticalQuestion('bio'))
                 ->withAnswer(BioForm::get())
-                ->showWhen(function(Condition $condition){
-                    $condition->where('dogs','>','0');
-                })
+            )->addQuestion((new VerticalQuestion('own_pets'))
+                ->withQuestionText('Which of the following pets do you own?')
+                ->withAnswer((new SingleAnswerLayout())
+                    ->withField((new CheckboxGroup('pets','Which pets do you own?'))
+                        ->addOption('Dogs','dog')
+                        ->addOption('Cats','cat')
+                        ->addOption('Hamsters','hamster'))
+                )
             );
 
         $section2=(new Section())
             ->withTitle("Your feelings towards pets")
             ->addInstruction(new HtmlContent('The following section presents different pets. Please indicate the extent to which you <b>agree</b> with each statement by using the provided rating scale.'))
-            ->addQuestionStd("dogs","I like dogs", AgreementLikert5::get('dogs'))
-            ->addQuestionStd("cats","I like cats", AgreementLikert5::get('cats'))
-            ->addQuestionStd("hamsters","I like hamsters", AgreementLikert5::get('hamsters'))
-            ->addQuestionStd("dog_think","I think about my dog", NeverAlwaysLikert5::get('dog_think'));
+            ->addQuestionStd("dogs","I like my dog", AgreementLikert5::get('dogs'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
+                $condition->where('own_pets.pets.dog',1);
+            })
+            ->addQuestionStd("cats","I like my cat", AgreementLikert5::get('cats'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
+                $condition->where('own_pets.pets.cat',1);
+            })
+            ->addQuestionStd("hamsters","I like my hamster", AgreementLikert5::get('hamsters'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
+                $condition->where('own_pets.pets.hamster',1);
+            });
 
         $section3=(new Section())
             ->withTitle("Final Section")
@@ -46,13 +54,17 @@ class DemoSurvey extends AbstractPredefinedBuilder
             ->addInstructionHtml('This is the final section\'s second instructions')
             ->addQuestion((new VerticalQuestion('final'))
                 ->showWhen(function(Condition $condition){
-                    $condition->where('dogs','>','3');
+                    $condition->where('dogs','>','2');
                 })
                 ->addInstructions(new HtmlContent('<b>Step 1</b>'))
                 ->addInstructions(new HtmlContent('<b>Step 2</b>'))
-                ->withAnswerField((new CheckboxGroup('dog_types','Which dogs do you like?'))
+                ->withQuestionText('Which of the following dogs do you like most?')
+                ->withAnswerField((new CheckboxGroup('dog_types','Dogs'))
                     ->addOption('Bulldog','bulldog')
                     ->addOption('Labrador','labrador')
+                    ->addOption('Any Dogs!','any', null, function(Condition $condition){
+                        $condition->where('dogs','>=','4');
+                    })
                 ));
 
         $survey=(new Survey())

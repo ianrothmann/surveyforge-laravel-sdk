@@ -54,11 +54,12 @@ class Section extends AbstractBuilder
         return $this;
     }
 
-    public function addQuestionStd($questionId, $questionText, AbstractField $answerField, $header=null,$subtitle=null)
+    public function addQuestionStd($questionId, $questionText, AbstractField $answerField, $header=null,$subtitle=null,$showWhen=null)
     {
         $questionLayout=(new VerticalQuestion($questionId))
             ->withQuestionText($questionText,$header,$subtitle)
-            ->withAnswerField($answerField);
+            ->withAnswerField($answerField)
+            ->showWhen($showWhen);
 
         $this->questions->add($questionLayout);
         return $this;

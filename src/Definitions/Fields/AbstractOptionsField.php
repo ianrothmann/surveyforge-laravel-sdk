@@ -28,7 +28,7 @@ abstract class AbstractOptionsField extends AbstractField
             'option_id'=>$optionId,
             'name'=> $name,
             'order'=>$this->options->count()+1,
-            'condition'=>$condition
+            'condition'=>$condition,
         ];
 
         if($description!==null){
@@ -50,9 +50,20 @@ abstract class AbstractOptionsField extends AbstractField
 
     }
 
+    protected function createCondition($callable, $runInverse=false)
+    {
+        if(!$callable){
+            return null;
+        }
+        $condition=new Condition($runInverse);
+        $callable($condition);
+        return $condition;
+    }
+
     public function toArray()
     {
         $definition=parent::toArray();
+        $definition['multiple'] = $this instanceof HasMultipleAnswers;
         $definition['options']=$this->options
             ->map(function($option){
                 if($option['condition']){
