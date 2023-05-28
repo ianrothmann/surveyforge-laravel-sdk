@@ -2,6 +2,7 @@
 
 namespace Surveyforge\Surveyforge\Definitions\Builders;
 
+use Illuminate\Support\Str;
 use Surveyforge\Surveyforge\Definitions\Interfaces\DefinitionType;
 
 abstract class AbstractBuilder

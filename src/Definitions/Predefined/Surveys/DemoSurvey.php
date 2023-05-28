@@ -63,7 +63,11 @@ class DemoSurvey extends AbstractPredefinedBuilder
                     ->addOption('Bulldog','bulldog')
                     ->addOption('Labrador','labrador')
                     ->addOption('Any Dogs!','any', null, function(Condition $condition){
-                        $condition->where('dogs','>=','4');
+                        $condition->whereIn('dogs',[2,3,4,5]);
+                        $condition->where(function(Condition $condition){
+                            $condition->where('dogs','<','4')
+                                      ->orWhere('hamsters','<','3');
+                        });
                     })
                 ));
 

@@ -4,7 +4,9 @@ namespace Surveyforge\Surveyforge\Flow;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
+use Surveyforge\Surveyforge\Utils\ArrayUtils;
 
 class SurveyFlowCreator
 {
@@ -64,6 +66,7 @@ class SurveyFlowCreator
         $this->registerSection($sectionId,$section->only('title'));
         $conditionId=$this->registerCondition($section->get('condition'));
         $flow=collect($section->get('instructions'))->map(function($content) use($sectionId,$conditionId){
+            $content['flow_id']=Str::orderedUuid()->toString();
             $content['conditions']=$this->combineConditions([$conditionId]);
             $content['section_id']=$sectionId;
             return $content;
@@ -92,9 +95,11 @@ class SurveyFlowCreator
     {
         $conditionId=$this->registerCondition($question->get('condition'));
         $flow=collect($question->get('instructions'))->map(function($content) use($conditionId,$parentConditionId){
+            $content['flow_id']=Str::orderedUuid()->toString();
             $content['conditions']=$this->combineConditions([$parentConditionId,$conditionId]);
             return $content;
         });
+        $question['flow_id']=Str::orderedUuid()->toString();
         $this->registerAnswerObject($question->get('answer_object'));
         $question->forget('answer_object');
         $question->forget('instructions');
@@ -148,7 +153,7 @@ class SurveyFlowCreator
     protected function extractConditions($flow)
     {
         $flow=$flow->toArray();
-        self::updateNodeRecursive($flow, function(&$item){
+        ArrayUtils::updateNodeRecursive($flow, function(&$item){
             $temp=collect($item);
             if($temp->get('definition_type')==='condition'){
                 $item=$this->registerCondition($item);
@@ -166,19 +171,6 @@ class SurveyFlowCreator
         $id=Uuid::uuid4()->toString();
         $this->conditions->put($id,$condition);
         return $id;
-    }
-
-    public static function updateNodeRecursive(&$arr, callable $callback)
-    {
-            foreach ($arr as $key => &$value) {
-                if (is_array($value) || $value instanceof Collection) {
-                    $callback($value, $key);
-                    if (is_array($value) || $value instanceof Collection) {
-                        self::updateNodeRecursive($value, $callback);
-                    }
-                }
-            }
-            unset($value);
     }
 
     protected function validate()
