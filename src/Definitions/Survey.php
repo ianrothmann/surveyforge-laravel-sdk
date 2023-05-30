@@ -17,6 +17,7 @@ class Survey extends AbstractBuilder
     protected $endings;
     protected $sections;
     protected $terms;
+    protected $languages;
 
     protected ?Theme $theme=null;
 
@@ -29,6 +30,7 @@ class Survey extends AbstractBuilder
         $this->sections=collect();
         $this->terms=collect();
         $this->otherLogos=collect();
+        $this->languages=collect();
     }
 
     public function withTitle($title)
@@ -66,6 +68,16 @@ class Survey extends AbstractBuilder
         return $this;
     }
 
+    public function addLanguage($languageId, $name, $default=false)
+    {
+        $this->languages->add([
+            'id'=>$languageId,
+            'name'=>$name,
+            'default'=>$default
+        ]);
+        return $this;
+    }
+
     public function toArray()
     {
         $this->fillDefaults();
@@ -84,7 +96,8 @@ class Survey extends AbstractBuilder
             'endings'=>$this->endings->map(function(AbstractContent $content){
                 return $content->build();
             })->toArray(),
-            'theme'=>$this->theme->build()
+            'theme'=>$this->theme->build(),
+            'languages'=>$this->languages->toArray()
         ];
 
         return $definition;
