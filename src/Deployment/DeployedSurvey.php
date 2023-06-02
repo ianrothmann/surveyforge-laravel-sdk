@@ -46,6 +46,18 @@ class DeployedSurvey
         return $this;
     }
 
+    public function notifyWhenComplete($url)
+    {
+        $this->dirty->put('webhook_on_complete',$url);
+        return $this;
+    }
+
+    public function redirectTo($url)
+    {
+        $this->dirty->put('redirect_to',$url);
+        return $this;
+    }
+
     public function toBeDeletedAfter(Carbon $dateTime)
     {
         $this->dirty->put('to_be_deleted_at',$dateTime->toDateTimeString());
@@ -56,6 +68,11 @@ class DeployedSurvey
     {
         $this->dirty->put('bot_id',$botId);
         return $this;
+    }
+
+    public function getUrl()
+    {
+        return $this->surveyData->get('survey_url');
     }
 
     public function getDefinition()
@@ -76,6 +93,16 @@ class DeployedSurvey
     public function getTags()
     {
         return $this->surveyData->get('tags');
+    }
+
+    public function getRedirectUrl()
+    {
+        return $this->surveyData->get('redirect_to');
+    }
+
+    public function getCompleteNotificationUrl()
+    {
+        return $this->surveyData->get('webhook_on_complete');
     }
 
     public function getBotId()

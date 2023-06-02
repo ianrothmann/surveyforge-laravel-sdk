@@ -39,13 +39,22 @@ class DemoSurvey extends AbstractPredefinedBuilder
             ->withTitle("Your feelings towards pets")
             ->addInstruction(new HtmlContent('The following section presents different pets. Please indicate the extent to which you <b>agree</b> with each statement by using the provided rating scale.'))
             ->addQuestionStd("dogs","I like my dog", AgreementLikert5::get('dogs'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.dog',1);
+               // $condition->where('own_pets.pets.dog',1);
             })
             ->addQuestionStd("cats","I like my cat", AgreementLikert5::get('cats'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.cat',1);
+              //  $condition->where('own_pets.pets.cat',1);
             })
             ->addQuestionStd("hamsters","I like my hamster", AgreementLikert5::get('hamsters'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.hamster',1);
+             //   $condition->where('own_pets.pets.hamster',1);
+            })
+            ->addQuestionStd("rabbit","I like my rabbit", AgreementLikert5::get('rabbits'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
+             //   $condition->where('own_pets.pets.parrot',1);
+            })
+            ->addQuestionStd("parrots","I like my parrot", AgreementLikert5::get('parrots'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
+              //  $condition->where('own_pets.pets.parrot',1);
+            })
+            ->addQuestionStd("lizard","I like my lizard", AgreementLikert5::get('lizards'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
+               // $condition->where('own_pets.pets.lizard',1);
             });
 
         $section3=(new Section())
@@ -74,9 +83,9 @@ class DemoSurvey extends AbstractPredefinedBuilder
         $survey=(new Survey())
             ->withTitle('Pets')
             ->addOrientation(new HtmlContent('Orientation Screen'))
-            ->addSection($section1)
+          //  ->addSection($section1)
             ->addSection($section2)
-            ->addSection($section3)
+         //   ->addSection($section3)
             ->addEnding(new HtmlContent('Ending Screen'));
 
         return $survey;

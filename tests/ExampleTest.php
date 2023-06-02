@@ -38,16 +38,36 @@ it('can run successfully through the survey flow',function() {
 });
 */
 
+it('can create and validate signed urls', function(){
+    $url='https://google.com?name=test&age=30';
+    $signer=\Surveyforge\Surveyforge\Url\SurveyforgeUrlSigner::withSecret('123456');
+    $signedUrl=$signer->sign($url);
+
+    expect($signer->check($signedUrl))->toBeTrue();
+    expect($signer->check(\Illuminate\Support\Str::replace('google','yahoo',$signedUrl)))->toBeFalse();
+
+    $url='https://google.com';
+    $signer=\Surveyforge\Surveyforge\Url\SurveyforgeUrlSigner::withSecret('123456');
+    $signedUrl=$signer->sign($url);
+    expect($signer->check($signedUrl))->toBeTrue();
+    expect($signer->check(\Illuminate\Support\Str::replace('https:','http:',$signedUrl)))->toBeTrue();
+
+});
+/*
 it('can create a survey on surveyforge server', function(){
+
+
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
+
     $deployedSurvey=new \Surveyforge\Surveyforge\Deployment\DeployedSurvey();
-    $deployedSurvey->onConnection('http://localhost:8021','994ac9b1-9f37-4742-9ad2-20b41aba3180|Av7fglKrUZFeeGJrZGsvVol7G5g41gzfOURxnm6e');
+    $deployedSurvey->onConnection('http://localhost:8021','9950da47-d804-4f79-b990-796e9d895983|e33ApeUwdrHci3VmVTEy9ZdfY9wTP9lNWVjoxKj8');
+    $deployedSurvey->setDefinition($survey->build());
     $deployedSurvey->setSurvey($survey);
     $deployedSurvey->setTags(['test','demo']);
     $deployedSurvey->save();
 
     $deployedSurvey=new \Surveyforge\Surveyforge\Deployment\DeployedSurvey($deployedSurvey->surveyId);
-    $deployedSurvey->onConnection('http://localhost:8021','994ac9b1-9f37-4742-9ad2-20b41aba3180|Av7fglKrUZFeeGJrZGsvVol7G5g41gzfOURxnm6e');
+    $deployedSurvey->onConnection('http://localhost:8021','9950da47-d804-4f79-b990-796e9d895983|e33ApeUwdrHci3VmVTEy9ZdfY9wTP9lNWVjoxKj8');
     $deployedSurvey->get();
     $deployedSurvey->setTags(['test','demo','test2']);
     $deployedSurvey->expiresAfter(\Illuminate\Support\Carbon::now()->addMonths(2));
@@ -55,7 +75,8 @@ it('can create a survey on surveyforge server', function(){
 
 
 
-    dd($deployedSurvey->refresh()->getExpiresAt());
+    dd($deployedSurvey->refresh()->getUrl());
 
 
 });
+*/

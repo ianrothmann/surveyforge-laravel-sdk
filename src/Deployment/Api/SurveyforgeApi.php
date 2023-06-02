@@ -4,6 +4,7 @@ namespace Surveyforge\Surveyforge\Deployment\Api;
 
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 
 class SurveyforgeApi
 {
@@ -57,7 +58,21 @@ class SurveyforgeApi
             throw new Exception('CURL Error: '.$error);
         }
 
-        return collect(json_decode($response, true));
+        $result=collect(json_decode($response, true));
+
+        if($result->get('message')=='Unauthenticated.'){
+            throw new Exception('API Error: Unauthenticated or Authentication token is invalid.');
+        }
+
+        if($result->has('error')){
+            if(App::hasDebugModeEnabled() || true){
+                throw new Exception('API Error: '.$result->get('error').': '.$result->get('message'));
+            }else{
+                throw new Exception('API Error: '.$result->get('error'));
+            }
+        }
+
+        return $result;
     }
 
     public function get($endpoint, $params = []): Collection
