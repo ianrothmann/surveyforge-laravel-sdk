@@ -4,9 +4,11 @@ namespace Surveyforge\Surveyforge\Request;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Redirect;
 use Surveyforge\Surveyforge\Deployment\DeployedSurvey;
+use Surveyforge\Surveyforge\Url\SurveyforgeUrlSigner;
 
 class RedirectRequestHandler
 {
@@ -15,6 +17,7 @@ class RedirectRequestHandler
     protected $onPause;
     protected $onComplete;
     protected $onExpire;
+    protected $onSecurityFailed;
 
     public function __construct(Request $request)
     {
@@ -44,11 +47,20 @@ class RedirectRequestHandler
         return $this;
     }
 
+    public function onSecurityValidationFailed($urlOrcallable)
+    {
+        $this->onSecurityFailed=$urlOrcallable;
+        return $this;
+    }
+
     public function handle()
     {
         $this->request->validate([
             'survey_id'=>'required|uuid',
+            'signature'=>'required|string',
         ]);
+
+        $this->handleSecurityValidation();
 
         if($this->request->has('surveyforge_pause')){
             return $this->handlePause();
@@ -84,9 +96,35 @@ class RedirectRequestHandler
         if($this->onExpire && is_callable($this->onExpire)){
             return call_user_func($this->onExpire);
         }
-        $deployedSurvey=DeployedSurvey::find($this->request->get('survey_id'));
+        $deployedSurvey=$this->getDeployedSurvey();
         $url=$deployedSurvey->getUrl();
         Redirect::to($url);
+    }
+
+    protected function handleSecurityValidation()
+    {
+        $deployedSurvey=$this->getDeployedSurvey();
+        $success=SurveyforgeUrlSigner::withSecret($deployedSurvey->getToken())
+            ->check($this->request->fullUrl());
+
+        if(!$success){
+            if($this->onSecurityFailed && is_callable($this->onSecurityFailed)){
+                return call_user_func($this->onSecurityFailed);
+            }elseif ($this->onSecurityFailed){
+                Redirect::to($this->onSecurityFailed);
+            }else{
+                die('Security validation failed');
+            }
+        }
+    }
+
+    protected function getDeployedSurvey(): DeployedSurvey
+    {
+        $deployedSurvey=DeployedSurvey::find($this->request->get('survey_id'));
+        if(!$deployedSurvey){
+            throw new \Exception('Invalid survey id');
+        }
+        return $deployedSurvey;
     }
 
 }

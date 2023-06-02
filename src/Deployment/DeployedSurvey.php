@@ -75,6 +75,11 @@ class DeployedSurvey
         return $this->surveyData->get('survey_url');
     }
 
+    public function getToken()
+    {
+        return $this->surveyData->get('token');
+    }
+
     public function getDefinition()
     {
         return $this->surveyData->get('definition');

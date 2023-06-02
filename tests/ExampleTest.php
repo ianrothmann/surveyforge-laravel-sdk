@@ -53,21 +53,21 @@ it('can create and validate signed urls', function(){
     expect($signer->check(\Illuminate\Support\Str::replace('https:','http:',$signedUrl)))->toBeTrue();
 
 });
-/*
+
 it('can create a survey on surveyforge server', function(){
 
 
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
 
     $deployedSurvey=new \Surveyforge\Surveyforge\Deployment\DeployedSurvey();
-    $deployedSurvey->onConnection('http://localhost:8021','9950da47-d804-4f79-b990-796e9d895983|e33ApeUwdrHci3VmVTEy9ZdfY9wTP9lNWVjoxKj8');
+    $deployedSurvey->onConnection('http://localhost:8021','9950fb85-8dfc-48df-8e13-2b593c939a64|CY22BUlVWs7OmblrilOXjH5kpXTz4l2CDA2G5ftW');
     $deployedSurvey->setDefinition($survey->build());
     $deployedSurvey->setSurvey($survey);
     $deployedSurvey->setTags(['test','demo']);
     $deployedSurvey->save();
 
     $deployedSurvey=new \Surveyforge\Surveyforge\Deployment\DeployedSurvey($deployedSurvey->surveyId);
-    $deployedSurvey->onConnection('http://localhost:8021','9950da47-d804-4f79-b990-796e9d895983|e33ApeUwdrHci3VmVTEy9ZdfY9wTP9lNWVjoxKj8');
+    $deployedSurvey->onConnection('http://localhost:8021','9950fb85-8dfc-48df-8e13-2b593c939a64|CY22BUlVWs7OmblrilOXjH5kpXTz4l2CDA2G5ftW');
     $deployedSurvey->get();
     $deployedSurvey->setTags(['test','demo','test2']);
     $deployedSurvey->expiresAfter(\Illuminate\Support\Carbon::now()->addMonths(2));
@@ -75,8 +75,8 @@ it('can create a survey on surveyforge server', function(){
 
 
 
-    dd($deployedSurvey->refresh()->getUrl());
+    dd($deployedSurvey->refresh()->getUrl(),$deployedSurvey->refresh()->getToken());
 
 
 });
-*/
+
