@@ -52,10 +52,12 @@ class SurveyforgeApi
     {
         $response = curl_exec($curl);
         $error = curl_error($curl);
+        //get curl code
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-        if ($error) {
-            throw new Exception('CURL Error: '.$error);
+        if ($error || !in_array($code, [200, 201, 204])) {
+            throw new Exception('CURL Error: '.$error.' - '.$response);
         }
 
         $result=collect(json_decode($response, true));

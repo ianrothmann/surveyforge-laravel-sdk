@@ -3,6 +3,7 @@
 namespace Surveyforge\Surveyforge\Deployment;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
 use Surveyforge\Surveyforge\Deployment\Traits\HandlesApiCalls;
@@ -24,7 +25,7 @@ class SurveyforgeVerifier
     public function verifyUrl($url)
     {
         $response=Cache::remember($this->getCacheKey($url), $this->getCacheTimeout($url), function () use ($url) {
-            return $this->api->get('verify/url', [
+            return $this->api->post('verify/url', [
                 'url'=>$url
             ]);
         });
@@ -33,7 +34,7 @@ class SurveyforgeVerifier
 
     public function verifyCurrentUrl()
     {
-        return $this->verifyUrl(URL::current());
+        return $this->verifyUrl(URL::full());
     }
 
     protected function getCacheKey($url)
@@ -43,6 +44,10 @@ class SurveyforgeVerifier
 
     protected function getCacheTimeout($url)
     {
+        if(App::hasDebugModeEnabled()){
+            return -1;
+        }
+
         $query_parts=$this->getQueryParts($url);
         $seconds=60;
         if(array_key_exists('expires', $query_parts)){

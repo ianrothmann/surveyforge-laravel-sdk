@@ -7,7 +7,7 @@ use Surveyforge\Surveyforge\Deployment\Api\SurveyforgeApi;
 
 trait HandlesApiCalls
 {
-    private SurveyforgeApi $api;
+    private ?SurveyforgeApi $api=null;
 
     protected function setApiFromConfig()
     {
