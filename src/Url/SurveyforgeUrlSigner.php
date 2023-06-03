@@ -9,6 +9,7 @@ class SurveyforgeUrlSigner
     protected $url;
     protected $secret;
     protected $expiresAt;
+    protected $additionalParams=[];
 
     public function __construct($secret)
     {
@@ -21,6 +22,12 @@ class SurveyforgeUrlSigner
     public static function withSecret($secret)
     {
         return new static($secret);
+    }
+
+    public function addAdditionalParams($params)
+    {
+        $this->additionalParams=$params;
+        return $this;
     }
 
     public function expiresAt(Carbon $expiresAt)
@@ -56,6 +63,7 @@ class SurveyforgeUrlSigner
         $path=$parts['path'] ?? '';
         $query_parts=[];
         parse_str($parts['query'] ?? '', $query_parts);
+        $query_parts=array_merge($query_parts, $this->additionalParams);
         $query_parts['expires']=$this->expiresAt;
         $query_parts['signature']=$this->getSignature($host, $path, $query_parts);
         $parts['query']=http_build_query($query_parts);
