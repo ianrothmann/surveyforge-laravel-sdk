@@ -7,11 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Surveyforge\Surveyforge\Deployment\Api\SurveyforgeApi;
 use Surveyforge\Surveyforge\Deployment\DeployedSurvey;
+use Surveyforge\Surveyforge\Deployment\SurveyforgeVerifier;
+use Surveyforge\Surveyforge\Deployment\Traits\HandlesApiCalls;
 use Surveyforge\Surveyforge\Url\SurveyforgeUrlSigner;
 
 class RedirectRequestHandler
 {
+    use HandlesApiCalls;
 
     protected Request $request;
     protected $onPause;
@@ -55,18 +61,24 @@ class RedirectRequestHandler
 
     public function handle()
     {
-        $this->request->validate([
+        $validator=Validator::make($this->request->all(),[
             'survey_id'=>'required|uuid',
+            'server_id'=>'required|string',
             'signature'=>'required|string',
+            'action'=>'required|in:pause,complete,expire',
         ]);
+
+        if(!$validator->valid()){
+            abort(400);
+        }
 
         $this->handleSecurityValidation();
 
-        if($this->request->has('surveyforge_pause')){
+        if($this->request->get('action')==='pause'){
             return $this->handlePause();
-        }else if($this->request->has('surveyforge_complete')){
+        }else if($this->request->get('action')=='complete'){
             return $this->handleComplete();
-        }else if($this->request->has('surveyforge_expire')){
+        }else if($this->request->get('action')=='expire'){
             return $this->handleExpire();
         }else{
             throw new \Exception('Invalid request');
@@ -76,7 +88,8 @@ class RedirectRequestHandler
     protected function handlePause()
     {
         if($this->onPause && is_callable($this->onPause)){
-            return call_user_func($this->onPause);
+            $survey=$this->getDeployedSurvey();
+            return call_user_func($this->onPause,$survey);
         }elseif ($this->onPause){
             Redirect::to($this->onPause);
         }
@@ -85,7 +98,8 @@ class RedirectRequestHandler
     protected function handleComplete()
     {
         if($this->onComplete && is_callable($this->onComplete)){
-            return call_user_func($this->onComplete);
+            $survey=$this->getDeployedSurvey();
+            return call_user_func($this->onComplete,$survey);
         }elseif ($this->onComplete){
             Redirect::to($this->onComplete);
         }
@@ -103,9 +117,14 @@ class RedirectRequestHandler
 
     protected function handleSecurityValidation()
     {
-        $deployedSurvey=$this->getDeployedSurvey();
-        $success=SurveyforgeUrlSigner::withSecret($deployedSurvey->getToken())
-            ->check($this->request->fullUrl());
+        if(!$this->api){
+            $serverConfig=$this->findServerConfig($this->request->get('server_id'));
+            $this->api=new SurveyforgeApi($serverConfig['url'],$serverConfig['token']);
+        }
+
+        $verifier=new SurveyforgeVerifier();
+        $verifier->withApi($this->api);
+        $success=$verifier->verifyCurrentUrl();
 
         if(!$success){
             if($this->onSecurityFailed && is_callable($this->onSecurityFailed)){
@@ -113,9 +132,19 @@ class RedirectRequestHandler
             }elseif ($this->onSecurityFailed){
                 Redirect::to($this->onSecurityFailed);
             }else{
-                die('Security validation failed');
+                abort(401);
             }
         }
+    }
+
+    protected function findServerConfig($url)
+    {
+        $serverId=$this->request->get('server_id');
+        $server=collect(config('surveyforge.servers'))->where('id',$serverId)->first();
+        if(!$server){
+            throw new \Exception('SurveyForge server ID not found in config: '.$serverId);
+        }
+        return $server;
     }
 
     protected function getDeployedSurvey(): DeployedSurvey

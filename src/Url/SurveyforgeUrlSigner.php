@@ -41,6 +41,9 @@ class SurveyforgeUrlSigner
         $path=$parts['path'] ?? '';
         $query_parts=[];
         parse_str($parts['query'] ?? '', $query_parts);
+        if(!isset($query_parts['signature'])){
+            return false;
+        }
         $signature=$query_parts['signature'];
         unset($query_parts['signature']);
         return $signature===$this->getSignature($host, $path, $query_parts);

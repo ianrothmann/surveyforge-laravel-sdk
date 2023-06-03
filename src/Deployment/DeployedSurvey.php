@@ -4,15 +4,16 @@ namespace Surveyforge\Surveyforge\Deployment;
 
 use Illuminate\Support\Carbon;
 use Surveyforge\Surveyforge\Definitions\Survey;
-use Surveyforge\Surveyforge\Deployment\Traits\HandlesModelApiCalls;
+use Surveyforge\Surveyforge\Deployment\Traits\HandlesSurveyApiCalls;
 
 class DeployedSurvey
 {
-    use HandlesModelApiCalls;
+    use HandlesSurveyApiCalls;
 
     public $surveyId;
     protected $surveyData;
     protected $dirty;
+    protected $redirectDisabled=false;
 
     public function __construct($surveyId=null)
     {
@@ -58,6 +59,13 @@ class DeployedSurvey
         return $this;
     }
 
+    public function disableRedirect($disable=true)
+    {
+        $this->dirty->put('redirect_to',null);
+        $this->redirectDisabled=$disable;
+        return $this;
+    }
+
     public function toBeDeletedAfter(Carbon $dateTime)
     {
         $this->dirty->put('to_be_deleted_at',$dateTime->toDateTimeString());
@@ -73,11 +81,6 @@ class DeployedSurvey
     public function getUrl()
     {
         return $this->surveyData->get('survey_url');
-    }
-
-    public function getToken()
-    {
-        return $this->surveyData->get('token');
     }
 
     public function getDefinition()
@@ -163,6 +166,7 @@ class DeployedSurvey
             }
         }else{
             if($this->dirty->get('definition')){
+                $this->createRedirectUrl();
                 $this->hydrate($this->createSurvey($this->dirty));
             }else{
                 throw new \Exception('Survey data does not contain a definition as cannot create');
@@ -170,5 +174,23 @@ class DeployedSurvey
         }
 
         return $this;
+    }
+
+    protected function createRedirectUrl()
+    {
+        if($this->redirectDisabled){
+            $this->redirectTo(null);
+            return;
+        }
+
+        if($this->dirty->get('redirect_to')){
+            return;
+        }
+
+        if(config('surveyforge.redirect_route')){
+            $this->redirectTo(route(config('surveyforge.redirect_route')));
+        }else{
+            $this->redirectTo(route('surveyforge.sdk.redirect'));
+        }
     }
 }
