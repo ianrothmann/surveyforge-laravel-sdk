@@ -7,6 +7,7 @@ use Surveyforge\Surveyforge\Definitions\Builders\AbstractBuilder;
 use Surveyforge\Surveyforge\Definitions\Condition\Condition;
 use Surveyforge\Surveyforge\Definitions\Content\HtmlContent;
 use Surveyforge\Surveyforge\Definitions\Fields\CheckboxGroup;
+use Surveyforge\Surveyforge\Definitions\Fields\Dropdown;
 use Surveyforge\Surveyforge\Definitions\Fields\NumberRating;
 use Surveyforge\Surveyforge\Definitions\Fields\TextArea;
 use Surveyforge\Surveyforge\Definitions\Fields\TextInput;
@@ -78,6 +79,14 @@ class DemoSurvey extends AbstractPredefinedBuilder
             ->withTitle("Final Section")
             ->addInstructionHtml('This is the final section\'s first instructions')
             ->addInstructionHtml('This is the final section\'s second instructions')
+            ->addQuestion((new VerticalQuestion('final_dropdown'))
+                ->addInstructions(new HtmlContent('<b>Step 1</b>'))
+                ->withQuestionText('Which of the following dogs do you like most?')
+                ->withAnswerField((new Dropdown('final_dropdown','Dogs'))
+                    ->addOption('Bulldog','bulldog')
+                    ->addOption('Labrador','labrador')
+                    ->addOption('Any Dogs!','any', 'I am a dog lover')
+                ))
             ->addQuestion((new VerticalQuestion('final'))
                 ->showWhen(function(Condition $condition){
                     $condition->where('dogs','>','2');
