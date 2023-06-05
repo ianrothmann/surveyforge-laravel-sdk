@@ -28,7 +28,7 @@ class NumberRating extends AbstractField
         $definition=parent::toArray();
         $definition['min']=$this->min;
         $definition['min_label']=$this->minLabel;
-        $definition['max']=$this->min;
+        $definition['max']=$this->max;
         $definition['max_label']=$this->maxLabel;
         return $definition;
     }

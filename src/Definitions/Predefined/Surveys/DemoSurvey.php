@@ -7,6 +7,9 @@ use Surveyforge\Surveyforge\Definitions\Builders\AbstractBuilder;
 use Surveyforge\Surveyforge\Definitions\Condition\Condition;
 use Surveyforge\Surveyforge\Definitions\Content\HtmlContent;
 use Surveyforge\Surveyforge\Definitions\Fields\CheckboxGroup;
+use Surveyforge\Surveyforge\Definitions\Fields\NumberRating;
+use Surveyforge\Surveyforge\Definitions\Fields\TextArea;
+use Surveyforge\Surveyforge\Definitions\Fields\TextInput;
 use Surveyforge\Surveyforge\Definitions\Predefined\AbstractPredefinedBuilder;
 use Surveyforge\Surveyforge\Definitions\Predefined\Fields\Likert\AgreementLikert5;
 use Surveyforge\Surveyforge\Definitions\Predefined\Fields\Likert\NeverAlwaysLikert5;
@@ -33,7 +36,21 @@ class DemoSurvey extends AbstractPredefinedBuilder
                         ->addOption('Cats','cat')
                         ->addOption('Hamsters','hamster'))
                 )
-            );
+            )->addQuestion((new VerticalQuestion('pet_name'))
+                ->withQuestionText('What is the best Pet name ever?')
+                ->withAnswer((new SingleAnswerLayout())
+                    ->withField((new TextInput('pet_name','Name')))
+                )
+            )->addQuestion((new VerticalQuestion('describe_pets'))
+                ->withQuestionText('Describe your love of pets')
+                ->withAnswer((new SingleAnswerLayout())
+                    ->withField((new TextArea('describe','Describe your love of pets')))
+                )
+            )->addQuestion((new VerticalQuestion('rate_self'))
+                ->withQuestionText('I am a pet person')
+                ->withAnswer((new SingleAnswerLayout())
+                    ->withField((new NumberRating('rate_self'))->withRange(1,10,"Not at all","Very much"))
+                ));
 
         $section2=(new Section())
             ->withTitle("Your feelings towards pets")

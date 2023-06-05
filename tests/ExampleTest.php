@@ -7,16 +7,17 @@ it('can build a survey', function () {
     expect($survey->build())->toBeArray();
 });
 
-/*
+
 it('can extract a survey flow from the demo survey', function () {
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
     $def=$survey->build();
     $creator=new \Surveyforge\Surveyforge\Flow\SurveyFlowCreator($def);
     $flow=$creator->get();
+   // dd($flow->get('flow'));
     expect($flow)->toHaveKeys(['answer_object','sections','flow','conditions']);
 
 });
-
+/*
 it('can run successfully through the survey flow',function() {
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
     $state=\Surveyforge\Surveyforge\State\SurveyStateHandler::fromSurvey($survey);
@@ -73,6 +74,7 @@ it('can create a survey on surveyforge server', function(){
     $deployedSurvey->setTags(['test','demo','test2']);
     $deployedSurvey->expiresAfter(\Illuminate\Support\Carbon::now()->addMonths(2));
     $deployedSurvey->save();
+
 
 dd($deployedSurvey->getAnswersDot());
 
