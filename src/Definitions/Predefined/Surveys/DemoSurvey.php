@@ -39,7 +39,7 @@ class DemoSurvey extends AbstractPredefinedBuilder
             ->withTitle("Your feelings towards pets")
             ->addInstruction(new HtmlContent('The following section presents different pets. Please indicate the extent to which you <b>agree</b> with each statement by using the provided rating scale.'))
             ->addQuestionStd("dogs","I like my dog", AgreementLikert5::get('dogs'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-               // $condition->where('own_pets.pets.dog',1);
+                //$condition->where('own_pets.pets.dog',1);
             })
             ->addQuestionStd("cats","I like my cat", AgreementLikert5::get('cats'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
               //  $condition->where('own_pets.pets.cat',1);

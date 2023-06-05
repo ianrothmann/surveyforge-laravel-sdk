@@ -17,6 +17,7 @@ class SurveyFlowCreator
     protected $answerObject;
     protected $sections;
     protected $conditions;
+    protected $theme;
     protected $warnings=[
         'conditions'=>[],
         'answers'=>[],
@@ -29,6 +30,7 @@ class SurveyFlowCreator
         $this->answerObject=collect();
         $this->sections=collect();
         $this->conditions=collect();
+        $this->theme=collect();
         $this->flowDefinition=$this->extractFlow();
         $this->validate();
     }
@@ -40,8 +42,19 @@ class SurveyFlowCreator
             'flow' => $this->flowDefinition->toArray(),
             'conditions' => $this->conditions->toArray(),
             'answer_object' => $this->answerObject->toArray(),
-            'warnings' => $this->warnings
+            'warnings' => $this->warnings,
+            'theme' => $this->theme->toArray()
         ]);
+    }
+
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
+    public function getFlow()
+    {
+        return $this->flowDefinition;
     }
 
     protected function extractFlow()
@@ -57,6 +70,8 @@ class SurveyFlowCreator
         $flow=$flow->concat($sections)->filter();
 
         $flow=$this->extractConditions($flow);
+
+        $this->theme=collect($this->definition->get('theme'));
 
         return $flow;
     }
