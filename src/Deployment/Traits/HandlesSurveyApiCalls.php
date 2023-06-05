@@ -13,7 +13,7 @@ trait HandlesSurveyApiCalls
 
     protected function getSurvey($surveyId)
     {
-        return $this->api->get('surveys/'.$surveyId)->get('survey');
+        return $this->api->get('surveys/'.$surveyId);
     }
 
     protected function createSurvey($data)

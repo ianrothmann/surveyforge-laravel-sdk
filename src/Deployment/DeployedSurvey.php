@@ -2,6 +2,7 @@
 
 namespace Surveyforge\Surveyforge\Deployment;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Surveyforge\Surveyforge\Definitions\Survey;
 use Surveyforge\Surveyforge\Deployment\Traits\HandlesSurveyApiCalls;
@@ -12,6 +13,7 @@ class DeployedSurvey
 
     public $surveyId;
     protected $surveyData;
+    protected $answerData;
     protected $dirty;
     protected $redirectDisabled=false;
 
@@ -20,6 +22,7 @@ class DeployedSurvey
         $this->setApiFromConfig();
         $this->dirty=collect();
         $this->surveyData=collect();
+        $this->answerData=collect();
         $this->surveyId=$surveyId;
     }
 
@@ -76,6 +79,16 @@ class DeployedSurvey
     {
         $this->dirty->put('bot_id',$botId);
         return $this;
+    }
+
+    public function getAnswers()
+    {
+        return $this->answerData;
+    }
+
+    public function getAnswersDot()
+    {
+        return collect(Arr::dot($this->answerData->toArray()));
     }
 
     public function getUrl()
@@ -145,15 +158,19 @@ class DeployedSurvey
         return $this;
     }
 
-    public function hydrate($surveyData)
+    public function hydrate($data)
     {
-        $surveyData=collect($surveyData);
-
-        if($surveyData->get('id')){
+        $data=collect($data);
+        if($data->get('id')){
+            $this->surveyData=$data;
+            $this->surveyId=$data['id'];
+        }elseif($data->get('survey') && $data->get('answers')){
+            $surveyData=collect(collect($data)->get('survey'));
             $this->surveyData=$surveyData;
             $this->surveyId=$surveyData['id'];
+            $this->answerData=collect(collect($data)->get('answers'));
         }else{
-            throw new \Exception('Survey data does not contain an id');
+            throw new \Exception('Survey data is not valid');
         }
         return $this;
     }

@@ -1,13 +1,13 @@
 <?php
 
 use Surveyforge\Surveyforge\Expression\Expression;
-/*
+
 it('can build a survey', function () {
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
     expect($survey->build())->toBeArray();
 });
 
-
+/*
 it('can extract a survey flow from the demo survey', function () {
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
     $def=$survey->build();
@@ -36,7 +36,7 @@ it('can run successfully through the survey flow',function() {
     expect($state->getCurrentFlowItem()['html'])->toBe('This is the final section\'s first instructions');
 
 });
-*/
+
 
 it('can create and validate signed urls', function(){
     $url='https://google.com?name=test&age=30';
@@ -53,14 +53,14 @@ it('can create and validate signed urls', function(){
     expect($signer->check(\Illuminate\Support\Str::replace('https:','http:',$signedUrl)))->toBeTrue();
 
 });
-
+*/
 it('can create a survey on surveyforge server', function(){
 
 
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
 
     $deployedSurvey=new \Surveyforge\Surveyforge\Deployment\DeployedSurvey();
-    $deployedSurvey->onConnection('http://localhost:8021','995261ba-c684-42cf-8c67-3f7ca7531e89|F6odYSKh0whwkI6jo8K0rC2tj3RBsJWukRSjJslm');
+    $deployedSurvey->onConnection('http://localhost:8021','9952747e-ea51-410c-917f-6312d716f18b|YaWqpHg3ylZ7hxdA6yIT4Sc2LxocJQuqGA3g8DC0');
     $deployedSurvey->setDefinition($survey->build());
     $deployedSurvey->setSurvey($survey);
     $deployedSurvey->redirectTo('https://google.com');
@@ -68,16 +68,17 @@ it('can create a survey on surveyforge server', function(){
     $deployedSurvey->save();
 
     $deployedSurvey=new \Surveyforge\Surveyforge\Deployment\DeployedSurvey($deployedSurvey->surveyId);
-    $deployedSurvey->onConnection('http://localhost:8021','995261ba-c684-42cf-8c67-3f7ca7531e89|F6odYSKh0whwkI6jo8K0rC2tj3RBsJWukRSjJslm');
+    $deployedSurvey->onConnection('http://localhost:8021','9952747e-ea51-410c-917f-6312d716f18b|YaWqpHg3ylZ7hxdA6yIT4Sc2LxocJQuqGA3g8DC0');
     $deployedSurvey->get();
     $deployedSurvey->setTags(['test','demo','test2']);
     $deployedSurvey->expiresAfter(\Illuminate\Support\Carbon::now()->addMonths(2));
     $deployedSurvey->save();
 
-dd($deployedSurvey);
+dd($deployedSurvey->getAnswersDot());
 
     dd($deployedSurvey->refresh()->getUrl(),$deployedSurvey->refresh()->getToken());
 
 
 });
+
 

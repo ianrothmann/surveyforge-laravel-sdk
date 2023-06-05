@@ -38,6 +38,7 @@ class SurveyFlowCreator
     public function get()
     {
         return collect([
+            'survey' => $this->getTruncatedSurvey(),
             'sections' => $this->sections->toArray(),
             'flow' => $this->flowDefinition->toArray(),
             'conditions' => $this->conditions->toArray(),
@@ -45,6 +46,11 @@ class SurveyFlowCreator
             'warnings' => $this->warnings,
             'theme' => $this->theme->toArray()
         ]);
+    }
+
+    protected function getTruncatedSurvey()
+    {
+        return $this->definition->only(['title','theme','languages']);
     }
 
     public function getTheme()
