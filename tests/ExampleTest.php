@@ -76,7 +76,7 @@ it('can create a survey on surveyforge server', function(){
     $deployedSurvey->save();
 
 
-dd($deployedSurvey->getAnswersDot());
+dd($deployedSurvey->getDefinition(), $deployedSurvey->getUrl());
 
     dd($deployedSurvey->refresh()->getUrl(),$deployedSurvey->refresh()->getToken());
 

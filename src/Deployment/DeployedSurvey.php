@@ -162,11 +162,15 @@ class DeployedSurvey
     {
         $data=collect($data);
         if($data->get('id')){
-            $this->surveyData=$data;
+            $this->surveyData=collect($data)->forget('content');
+            $definition=collect($data->get('content'))->get('definition');
+            $this->surveyData['definition']=$definition;
             $this->surveyId=$data['id'];
         }elseif($data->get('survey') && $data->get('answers')){
             $surveyData=collect(collect($data)->get('survey'));
-            $this->surveyData=$surveyData;
+            $definition=collect($surveyData->get('content'))->get('definition');
+            $this->surveyData=$surveyData->forget('content');
+            $this->surveyData['definition']=$definition;
             $this->surveyId=$surveyData['id'];
             $this->answerData=collect(collect($data)->get('answers'));
         }else{

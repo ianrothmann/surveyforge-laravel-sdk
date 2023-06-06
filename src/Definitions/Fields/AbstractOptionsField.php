@@ -40,11 +40,14 @@ abstract class AbstractOptionsField extends AbstractField
 
     protected function buildAnswerObject()
     {
+        /*
         if($this instanceof HasMultipleAnswers){
             return $this->options->keyBy('option_id')->map(function($option){
                 return null;
             })->toArray();
         }
+        //TODO This code was to build one answer per option. But this has been reverted, keeping the code for future expansion.
+        */
 
         return null;
 

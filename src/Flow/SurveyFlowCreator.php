@@ -142,6 +142,7 @@ class SurveyFlowCreator
                 if($field['field']['field_id'] ?? null){
                     $fieldRef=$questionId.'.'.$field['field']['field_id'];
                     $field['field']['answer_ref']=$fieldRef;
+                    /*
                     //Now map option refs
                     if(($field['field']['multiple'] ?? false) && ($field['field']['options'] ?? null)){
                         $field['field']['options']=collect($field['field']['options'])->map(function($option) use($fieldRef){
@@ -151,6 +152,8 @@ class SurveyFlowCreator
                             return $option;
                         })->toArray();
                     }
+                    //TODO This code was to build one answer per option. But this has been reverted, keeping the code for future expansion.
+                    */
                 }
                 return $field;
             })->toArray();
