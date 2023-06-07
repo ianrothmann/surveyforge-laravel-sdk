@@ -22,6 +22,7 @@ class SurveyFlowCreator
         'conditions'=>[],
         'answers'=>[],
     ];
+    protected $runningFlowIndex=0;
 
     public function __construct(array $surveyDefinition)
     {
@@ -65,6 +66,7 @@ class SurveyFlowCreator
 
     protected function extractFlow()
     {
+        $this->runningFlowIndex=0;
         $flow=collect();
         $sections=collect($this->definition->get('sections'))
             ->map(function($section, $idx){
@@ -84,9 +86,11 @@ class SurveyFlowCreator
 
     protected function extractSection($section, $sectionId)
     {
-        $this->registerSection($sectionId,$section->only('title'));
+        $startIndex=$this->runningFlowIndex;
         $conditionId=$this->registerCondition($section->get('condition'));
+
         $flow=collect($section->get('instructions'))->map(function($content) use($sectionId,$conditionId){
+            $this->runningFlowIndex++;
             $content['flow_id']=Str::orderedUuid()->toString();
             $content['conditions']=$this->combineConditions([$conditionId]);
             $content['section_id']=$sectionId;
@@ -95,19 +99,23 @@ class SurveyFlowCreator
 
         $questions=collect($section->get('questions'))
             ->map(function($question, $idx) use($sectionId,$conditionId){
+                $this->runningFlowIndex++;
                 return $this->extractQuestion(collect($question),$sectionId,$conditionId);
             })
             ->flatten(1)
             ->toArray();
 
+        $this->registerSection($sectionId,$section->only('title'),$startIndex,$this->runningFlowIndex);
         $flow=$flow->concat($questions);
 
         return $flow;
     }
 
-    protected function registerSection($order, $props)
+    protected function registerSection($order, $props, $startIndex, $endIndex)
     {
         $props['id']=$order;
+        $props['start_index']=$startIndex;
+        $props['end_index']=$endIndex;
         $this->sections->put($order,$props);
         return $order;
     }
