@@ -10,6 +10,7 @@ class LastNameField extends AbstractPredefinedBuilder
 {
     public static function get($fieldId='last_name'): TextInput
     {
-        return (new TextInput($fieldId,'Last name'));
+        return (new TextInput($fieldId,'Last name'))
+            ->validateWith('required|min:2|max:255');
     }
 }
