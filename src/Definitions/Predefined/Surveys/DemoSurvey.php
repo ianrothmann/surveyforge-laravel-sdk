@@ -57,22 +57,22 @@ class DemoSurvey extends AbstractPredefinedBuilder
             ->withTitle("Your feelings towards pets")
             ->addInstruction(new HtmlContent('The following section presents different pets. Please indicate the extent to which you <b>agree</b> with each statement by using the provided rating scale.'))
             ->addQuestionStd("dogs","I like my dog", AgreementLikert5::get('dogs'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.dog',1);
+                $condition->whereIn('own_pets.pets','dog');
             })
             ->addQuestionStd("cats","I like my cat", AgreementLikert5::get('cats'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.cat',1);
+                $condition->whereIn('own_pets.pets','cat');
             })
             ->addQuestionStd("hamsters","I like my hamster", AgreementLikert5::get('hamsters'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.hamster',1);
+                $condition->whereIn('own_pets.pets','hamster');
             })
             ->addQuestionStd("rabbit","I like my rabbit", AgreementLikert5::get('rabbits'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.parrot',1);
+                $condition->whereIn('own_pets.pets','parrot');
             })
             ->addQuestionStd("parrots","I like my parrot", AgreementLikert5::get('parrots'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.parrot',1);
+                $condition->whereIn('own_pets.pets','parrot');
             })
             ->addQuestionStd("lizard","I like my lizard", AgreementLikert5::get('lizards'), 'Please Answer', 'Select an option to continue', function(Condition $condition){
-                $condition->where('own_pets.pets.lizard',1);
+                $condition->whereIn('own_pets.pets','lizard');
             });
 
         $section3=(new Section())
@@ -89,7 +89,8 @@ class DemoSurvey extends AbstractPredefinedBuilder
                 ))
             ->addQuestion((new VerticalQuestion('final'))
                 ->showWhen(function(Condition $condition){
-                    $condition->where('dogs','>','2');
+                    $condition->where('dogs','>','2')
+                        ->whereNotNull('dogs');
                 })
                 ->addInstructions(new HtmlContent('<b>Step 1</b>'))
                 ->addInstructions(new HtmlContent('<b>Step 2</b>'))

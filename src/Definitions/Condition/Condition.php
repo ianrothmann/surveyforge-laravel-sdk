@@ -49,6 +49,13 @@ class Condition extends AbstractBuilder
 
     public function whereIn($column,$values=[])
     {
+        $values=collect($values)->map(function($value){
+            if(is_string($value)){
+                $value="'{$value}'";
+            }
+            return $value;
+        })->toArray();
+
         $this->processWhereClause('AND',$column,'IN',$values);
         return $this;
     }

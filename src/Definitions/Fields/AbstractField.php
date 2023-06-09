@@ -41,9 +41,9 @@ abstract class AbstractField extends AbstractBuilder
 
     public function getValidator()
     {
-        if($this->validator && !$this->optional && Str::contains($this->validator,'required')){
+        if($this->validator && !$this->optional && !Str::contains($this->validator,'required')){
             return $this->validator.'|required';
-        }elseif(!$this->validator && !$this->optional && Str::contains($this->validator,'required')){
+        }elseif(!$this->validator && !$this->optional && !Str::contains($this->validator,'required')){
             return $this->validator='required';
         }else{
             return $this->validator;
