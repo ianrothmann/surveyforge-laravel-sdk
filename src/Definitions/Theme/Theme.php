@@ -17,7 +17,7 @@ class Theme extends AbstractBuilder
     protected string $warning;
     protected string $success;
 
-    protected string $logoOnLightUrl;
+    protected ?string $logoOnLightUrl;
     protected ?string $logoOnDarkUrl=null;
 
     protected ?string $iconOnLightUrl=null;
@@ -128,7 +128,8 @@ class Theme extends AbstractBuilder
             ->withSuccessColor('#8c9eff')
             ->withWarningColor('#FF8D11')
             ->withErrorColor('#b71c1c')
-            ->setLogoUrl('https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=300');
+            ->setLogoUrl(null,'https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=300')
+            ->setIconUrl(null,'https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=300');
     }
 
 }

@@ -3,6 +3,7 @@
 namespace Surveyforge\Surveyforge\State;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Surveyforge\Surveyforge\Definitions\Survey;
 use Surveyforge\Surveyforge\Expression\Expression;
@@ -48,9 +49,17 @@ class SurveyStateHandler
         return self::fromSurveyDefinitionObject($survey->build());
     }
 
-    public function setAnswers(array $answers)
+    public function setAnswerObject(array $answers)
     {
         $this->answerObject=$answers;
+        return $this;
+    }
+
+    public function setAnswersFromRefs(array $answers)
+    {
+        foreach ($answers as $ref=>$answer){
+            $this->setAnswer($ref,$answer);
+        }
         return $this;
     }
 
@@ -87,11 +96,52 @@ class SurveyStateHandler
         return false;
     }
 
+    public function getInvalidFlowItems()
+    {
+        $validators=$this->getValidationState();
+        $invalid=$validators->filter(function($item, $answerRef){
+            $validator=Validator::make([
+                'answer'=>$item['answer'],
+            ],[
+                'answer'=>$item['validator'],
+            ]);
+            return $validator->errors()->count()>0;
+        });
+        dd($invalid);
+    }
+
+    public function getValidationState()
+    {
+        $this->currentIndex=0;
+        $data=collect();
+        do{
+            $current=collect($this->getCurrentFlowItem());
+            if($current->get('definition_type')=='question'){
+                $answer=collect($current->get('answer'));
+                if($answer->get('fields')){
+                    $fields=collect($answer->get('fields'));
+                    foreach ($fields as $field){
+                        $field=collect(collect($field)->get('field'));
+                        $data[$field['answer_ref']]=[
+                            'validator'=>$field['validator'] ?? '',
+                            'answer' => Arr::get($this->answerObject,$field['answer_ref']),
+                            'name' => $field->get('name') ?? $current->get('question'),
+                            'question_definition_id'=>$current->get('definition_id'),
+                        ];
+                    }
+                }
+
+            }
+        }while($this->next());
+
+        return $data;
+    }
+
     protected function getConditionedFlowMapByIndex($conditionalFlow)
     {
-        $newFlowOrder=$conditionalFlow->pluck('flow_id');
+        $newFlowOrder=$conditionalFlow->pluck('definition_id');
         return $this->flow->mapWithKeys(function($flowItem, $index) use ($newFlowOrder){
-            return [$index=>!!$newFlowOrder->contains($flowItem['flow_id'])];
+            return [$index=>!!$newFlowOrder->contains($flowItem['definition_id'])];
         });
     }
 

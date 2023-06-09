@@ -23,6 +23,7 @@ class SurveyFlowCreator
         'answers'=>[],
     ];
     protected $runningFlowIndex=0;
+    protected $questionNumber=0;
 
     public function __construct(array $surveyDefinition)
     {
@@ -91,7 +92,6 @@ class SurveyFlowCreator
 
         $flow=collect($section->get('instructions'))->map(function($content) use($sectionId,$conditionId){
             $this->runningFlowIndex++;
-            $content['flow_id']=Str::orderedUuid()->toString();
             $content['conditions']=$this->combineConditions([$conditionId]);
             $content['section_id']=$sectionId;
             return $content;
@@ -123,12 +123,12 @@ class SurveyFlowCreator
     protected function extractQuestion(Collection $question, $sectionId, $parentConditionId=null)
     {
         $conditionId=$this->registerCondition($question->get('condition'));
-        $flow=collect($question->get('instructions'))->map(function($content) use($conditionId,$parentConditionId){
-            $content['flow_id']=Str::orderedUuid()->toString();
+        $flow=collect($question->get('instructions'))->map(function($content) use($conditionId,$parentConditionId,$sectionId){
             $content['conditions']=$this->combineConditions([$parentConditionId,$conditionId]);
+            $content['section_id']=$sectionId;
             return $content;
         });
-        $question['flow_id']=Str::orderedUuid()->toString();
+        $question['question_number']=++$this->questionNumber;
         $this->registerAnswerObject($question->get('answer_object'));
         $question->forget('answer_object');
         $question->forget('instructions');

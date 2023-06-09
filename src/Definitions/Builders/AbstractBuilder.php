@@ -29,6 +29,7 @@ abstract class AbstractBuilder
             throw new \Exception('Definition type is not set for '.get_class($this).'.');
         }
 
+        $definition['definition_id']=Str::orderedUuid()->toString();
         $definition['definition_type']=$this->getDefinitionType();
 
         return $definition;

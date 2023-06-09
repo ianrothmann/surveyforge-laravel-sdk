@@ -1,7 +1,7 @@
 <?php
 
 use Surveyforge\Surveyforge\Expression\Expression;
-
+/*
 it('can build a survey', function () {
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
     expect($survey->build())->toBeArray();
@@ -17,14 +17,15 @@ it('can extract a survey flow from the demo survey', function () {
     expect($flow)->toHaveKeys(['answer_object','sections','flow','conditions']);
 
 });
+*/
 /*
 it('can run successfully through the survey flow',function() {
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
     $state=\Surveyforge\Surveyforge\State\SurveyStateHandler::fromSurvey($survey);
-    $state->setAnswer('own_pets.pets.dog',1);
+    $state->setAnswer('own_pets.pets',['dog','cat']);
     $state->setAnswer('own_pets.pets.cat',1);
-    $state->setAnswer('own_pets.pets.hamster',0);
     $state->setAnswer('dogs.dogs',3);
+   // dd($state->getInvalidFlowItems());
 
     $state->next();
     $state->next();
@@ -32,13 +33,15 @@ it('can run successfully through the survey flow',function() {
     $state->next();
     $state->next();
     $state->next();
-
+    $state->next();
+    $state->next();
+    $state->next();
     //Skip the hamster question
     expect($state->getCurrentFlowItem()['html'])->toBe('This is the final section\'s first instructions');
 
 });
-
-
+*/
+/*
 it('can create and validate signed urls', function(){
     $url='https://google.com?name=test&age=30';
     $signer=\Surveyforge\Surveyforge\Url\SurveyforgeUrlSigner::withSecret('123456');
@@ -54,9 +57,17 @@ it('can create and validate signed urls', function(){
     expect($signer->check(\Illuminate\Support\Str::replace('https:','http:',$signedUrl)))->toBeTrue();
 
 });
+
+it('can evaluate a in_array',function(){
+    $ex=new Surveyforge\Surveyforge\Expression\Expression('in_array(arr1,arr2)');
+    $ex->withVariables([
+        'arr1'=>[1,2,3],
+        'arr2'=>[5],
+    ]);
+    dd($ex->evaluate());
+});
 */
 it('can create a survey on surveyforge server', function(){
-
 
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
 

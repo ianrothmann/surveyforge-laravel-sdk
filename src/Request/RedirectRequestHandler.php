@@ -68,7 +68,7 @@ class RedirectRequestHandler
             'action'=>'required|in:pause,complete,expire',
         ]);
 
-        if(!$validator->valid()){
+        if($validator->errors()->count()>0){
             abort(400);
         }
 

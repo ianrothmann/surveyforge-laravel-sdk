@@ -37,5 +37,17 @@ class Expression
     {
         $expressionLanguage->addFunction(ExpressionFunction::fromPhp('in_array'));
         $expressionLanguage->addFunction(ExpressionFunction::fromPhp('is_null'));
+
+        $expressionLanguage->register('in_array', function ($str) {
+            return sprintf('%1$s', $str);
+        }, function ($data,$needle,$arr) {
+            if (!is_array($needle)) {
+                $needle=[$needle];
+            }
+            if (!is_array($arr)) {
+                $arr=[$arr];
+            }
+            return sizeof(array_intersect($needle,$arr))>0;
+        });
     }
 }
