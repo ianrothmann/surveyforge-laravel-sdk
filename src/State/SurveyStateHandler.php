@@ -107,7 +107,8 @@ class SurveyStateHandler
             ]);
             return $validator->errors()->count()>0;
         });
-        dd($invalid);
+
+        return $invalid;
     }
 
     public function getValidationState()
