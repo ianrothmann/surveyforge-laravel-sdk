@@ -32,7 +32,7 @@ class Section extends AbstractBuilder
 
     public function withTitle($title)
     {
-        $this->title=$title;
+        $this->title=$this->renderText($title);
         return $this;
     }
 
@@ -42,7 +42,7 @@ class Section extends AbstractBuilder
         return $this;
     }
 
-    public function addInstructionHtml(string $html)
+    public function addInstructionHtml($html)
     {
         $this->instructions->add(new HtmlContent($html));
         return $this;

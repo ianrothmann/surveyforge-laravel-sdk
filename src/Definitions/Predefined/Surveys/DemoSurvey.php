@@ -19,23 +19,29 @@ use Surveyforge\Surveyforge\Definitions\Questions\StepQuestion;
 use Surveyforge\Surveyforge\Definitions\Questions\VerticalQuestion;
 use Surveyforge\Surveyforge\Definitions\Section;
 use Surveyforge\Surveyforge\Definitions\Survey;
+use Surveyforge\Surveyforge\Definitions\Text\TextTranslator;
 
 class DemoSurvey extends AbstractPredefinedBuilder
 {
     public static function get(): Survey
     {
+        $translator=new TextTranslator();
+        $translator->addLanguage('en','English',true,'en')
+            ->addLanguage('nl','Nederlands',true,'en');
+
         $section1=(new Section())
             ->withTitle("About yourself")
-            ->addInstructionHtml('We would like to get to know you.')
+            ->addInstructionHtml($translator->text('We would like to get to know you.')->translate('nl','We willen je graag leren kennen.'))
             ->addQuestion((new VerticalQuestion('bio'))
                 ->withAnswer(BioForm::get())
             )->addQuestion((new VerticalQuestion('own_pets'))
-                ->withQuestionText('Which of the following pets do you own?')
+                ->withQuestionText($translator->text('Do you own pets?')->translate('nl','Heb je huisdieren?'))
                 ->withAnswer((new SingleAnswerLayout())
-                    ->withField((new CheckboxGroup('pets','Which pets do you own?'))
-                        ->addOption('Dogs','dog')
-                        ->addOption('Cats','cat')
-                        ->addOption('Hamsters','hamster'))
+                    ->withField((new CheckboxGroup('pets',$translator->text('Do you own pets?')->translate('nl','Heb je huisdieren?')))
+                        ->addOption($translator->text('Dogs')->translate('nl','Honden'),'dog')
+                        ->addOption($translator->text('Cats')->translate('nl','Katten'),'cat')
+                        ->addOption($translator->text('Hamsters')->translate('nl','Hamsters'),'hamster')
+                    )
                 )
             )->addQuestion((new VerticalQuestion('pet_name'))
                 ->withQuestionText('What is the best Pet name ever?')
@@ -108,6 +114,7 @@ class DemoSurvey extends AbstractPredefinedBuilder
                 ));
 
         $survey=(new Survey())
+            ->withTranslator($translator)
             ->withTitle('Pets')
             ->addOrientation(new HtmlContent('Orientation Screen'))
             ->addSection($section1)

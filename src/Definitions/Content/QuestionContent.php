@@ -12,19 +12,19 @@ class QuestionContent extends AbstractContent
 
     public function withQuestion($question)
     {
-        $this->question=$question;
+        $this->question=$this->renderText($question);
         return $this;
     }
 
     public function withHeader($header)
     {
-        $this->header=$header;
+        $this->header=$this->renderText($header);
         return $this;
     }
 
     public function withSubtitle($subtitle)
     {
-        $this->subtitle=$subtitle;
+        $this->subtitle=$this->renderText($subtitle);
         return $this;
     }
 

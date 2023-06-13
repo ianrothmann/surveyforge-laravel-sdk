@@ -25,7 +25,7 @@ class GridContent extends AbstractContent
 
     public function withTitle($title)
     {
-        $this->title=$title;
+        $this->title=$this->renderText($title);
         return $this;
     }
 

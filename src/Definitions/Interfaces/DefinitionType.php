@@ -12,4 +12,6 @@ interface DefinitionType
     CONST CONTENT= 'content';
     CONST THEME= 'theme';
     CONST CONDITION= 'condition';
+    CONST TEXT_BAG= 'text_bag';
+    CONST TEXT= 'text';
 }

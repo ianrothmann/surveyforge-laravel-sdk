@@ -5,7 +5,7 @@ namespace Surveyforge\Surveyforge\Definitions\Fields;
 abstract class AbstractTextField extends AbstractField
 {
 
-    protected ?string $name;
+    protected $name;
     protected string $hint='';
     protected string $placeholder='';
     protected $maxChars;
@@ -14,7 +14,7 @@ abstract class AbstractTextField extends AbstractField
     public function __construct($fieldId, $name)
     {
         parent::__construct($fieldId);
-        $this->name = $name;
+        $this->name = $this->renderText($name);
     }
 
     public function toArray()
@@ -31,7 +31,7 @@ abstract class AbstractTextField extends AbstractField
 
     public function withHint($hint)
     {
-        $this->hint=$hint;
+        $this->hint=$this->renderText($hint);
         return $this;
     }
 

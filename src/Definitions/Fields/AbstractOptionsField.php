@@ -26,13 +26,13 @@ abstract class AbstractOptionsField extends AbstractField
 
         $def=[
             'option_id'=>$optionId,
-            'name'=> $name,
+            'name'=> $this->renderText($name),
             'order'=>$this->options->count()+1,
             'condition'=>$condition,
         ];
 
         if($description!==null){
-            $def['description']=$description;
+            $def['description']=$this->renderText($description);
         }
 
         $this->options[]=$def;

@@ -9,7 +9,7 @@ use Surveyforge\Surveyforge\Definitions\Fields\Interfaces\HasMultipleAnswers;
 class MultiSelect extends AbstractOptionsField implements CanBeUsedOnForms, HasMultipleAnswers
 {
     protected string $type = FieldType::MULTI_SELECT;
-    protected ?string $name;
+    protected $name;
 
     public function __construct($fieldId, $name)
     {

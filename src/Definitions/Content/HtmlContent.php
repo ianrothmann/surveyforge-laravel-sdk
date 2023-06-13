@@ -12,18 +12,18 @@ class HtmlContent extends AbstractContent
     public function __construct($html=null)
     {
         parent::__construct();
-        $this->html=$html;
+        $this->withHtml($html);
     }
 
     public function withHtml($html)
     {
-        $this->html=$html;
+        $this->html=$this->renderText($html);
         return $this;
     }
 
     public function withTitle($title)
     {
-        $this->title=$title;
+        $this->title=$this->renderText($title);
         return $this;
     }
 

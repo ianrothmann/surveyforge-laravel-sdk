@@ -2,6 +2,7 @@
 
 namespace Surveyforge\Surveyforge\Definitions;
 
+use Illuminate\Support\Arr;
 use Surveyforge\Surveyforge\Definitions\Builders\AbstractBuilder;
 use Surveyforge\Surveyforge\Definitions\Content\AbstractContent;
 use Surveyforge\Surveyforge\Definitions\Interfaces\DefinitionType;
@@ -17,7 +18,7 @@ class Survey extends AbstractBuilder
     protected $endings;
     protected $sections;
     protected $terms;
-    protected $languages;
+    protected $translator;
 
     protected ?Theme $theme=null;
 
@@ -35,7 +36,7 @@ class Survey extends AbstractBuilder
 
     public function withTitle($title)
     {
-        $this->title=$title;
+        $this->title=$this->renderText($title);
         return $this;
     }
 
@@ -68,19 +69,22 @@ class Survey extends AbstractBuilder
         return $this;
     }
 
-    public function addLanguage($languageId, $name, $default=false)
+    public function withTranslator($translator)
     {
-        $this->languages->add([
-            'id'=>$languageId,
-            'name'=>$name,
-            'default'=>$default
-        ]);
+        $this->translator=$translator;
         return $this;
     }
 
     public function toArray()
     {
         $this->fillDefaults();
+        $text=$this->translator ? $this->translator->build() : null;
+        $languages=[];
+
+        if($text){
+            $languages=Arr::get($text,'languages',[]);
+            unset($text['languages']);
+        }
 
         $definition=[
             'title'=>$this->title,
@@ -97,7 +101,8 @@ class Survey extends AbstractBuilder
                 return $content->build();
             })->toArray(),
             'theme'=>$this->theme->build(),
-            'languages'=>$this->languages->toArray()
+            'languages'=>$languages,
+            'text'=> $text
         ];
 
         return $definition;

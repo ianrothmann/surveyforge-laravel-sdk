@@ -21,7 +21,7 @@ class TextInput extends AbstractTextField implements CanBeUsedOnForms
      */
     public function withPrefix($prefix)
     {
-        $this->prefix = $prefix;
+        $this->prefix = $this->renderText($prefix);
         return $this;
     }
 
@@ -31,7 +31,7 @@ class TextInput extends AbstractTextField implements CanBeUsedOnForms
      */
     public function withSuffix($suffix)
     {
-        $this->suffix = $suffix;
+        $this->suffix = $this->renderText($suffix);
         return $this;
     }
 

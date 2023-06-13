@@ -12,7 +12,7 @@ abstract class AbstractField extends AbstractBuilder
     protected $fieldId;
     protected string $type;
     protected bool $optional=false;
-    protected ?string $name;
+    protected $name;
     protected $definitionType=DefinitionType::FIELD;
     protected string $validator='';
 

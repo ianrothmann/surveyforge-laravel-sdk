@@ -11,15 +11,15 @@ class NumberRating extends AbstractField
 
     protected int $min;
     protected int $max;
-    protected string $minLabel;
-    protected string $maxLabel;
+    protected $minLabel;
+    protected $maxLabel;
 
     public function withRange($min, $max, $minLabel=null, $maxLabel=null)
     {
         $this->min = $min;
         $this->max = $max;
-        $this->minLabel = $minLabel;
-        $this->maxLabel = $maxLabel;
+        $this->minLabel = $this->renderText($minLabel);
+        $this->maxLabel = $this->renderText($maxLabel);
         return $this;
     }
 

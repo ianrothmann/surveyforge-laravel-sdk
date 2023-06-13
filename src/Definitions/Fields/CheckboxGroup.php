@@ -10,12 +10,12 @@ class CheckboxGroup extends AbstractOptionsField implements CanBeUsedOnForms, Ha
 {
     protected string $type = FieldType::CHECKBOX_GROUP;
 
-    protected ?string $name;
+    protected $name;
 
     public function __construct($fieldId, $name)
     {
         parent::__construct($fieldId);
-        $this->name = $name;
+        $this->name = $this->renderText($name);
     }
 
     public function addOption($name, $optionId = null, $description=null, $showWhen=null)

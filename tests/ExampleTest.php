@@ -2,6 +2,19 @@
 
 use Surveyforge\Surveyforge\Expression\Expression;
 /*
+it('build translations', function () {
+    $bag=new \Surveyforge\Surveyforge\Definitions\Text\TextTranslator();
+    $bag->addLanguage('en','English',true,'en')
+        ->addLanguage('de','German',false,'en');
+
+    $bag->text('This is the english text')
+        ->translate('de','Das ist der deutsche Text');
+
+    $text=collect($bag->build()['texts'])->first();
+    expect($text['text'])->toHaveLength(2);
+});
+*/
+/*
 it('can build a survey', function () {
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get();
     expect($survey->build())->toBeArray();
@@ -13,10 +26,12 @@ it('can extract a survey flow from the demo survey', function () {
     $def=$survey->build();
     $creator=new \Surveyforge\Surveyforge\Flow\SurveyFlowCreator($def);
     $flow=$creator->get();
+
    // dd($flow->get('flow'));
     expect($flow)->toHaveKeys(['answer_object','sections','flow','conditions']);
 
 });
+
 */
 /*
 it('can run successfully through the survey flow',function() {
