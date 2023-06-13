@@ -48,14 +48,14 @@ class TextTranslator extends AbstractBuilder
             'id' => $languageId,
             'name'=>$name,
             'default'=>$default,
-            'framework_language'=>$systemLanguage
+            'system_language'=>$systemLanguage
         ]);
         return $this;
     }
 
     protected function validateSystemLanguage($id)
     {
-        $supportedLanguages = ['en'];
+        $supportedLanguages = ['en','nl'];
         if(!in_array($id, $supportedLanguages)){
             throw new \Exception('Framework language '.$id.' is not supported.');
         }

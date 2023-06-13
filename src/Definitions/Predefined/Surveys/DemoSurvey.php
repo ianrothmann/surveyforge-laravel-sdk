@@ -27,7 +27,7 @@ class DemoSurvey extends AbstractPredefinedBuilder
     {
         $translator=new TextTranslator();
         $translator->addLanguage('en','English',true,'en')
-            ->addLanguage('nl','Nederlands',true,'en');
+            ->addLanguage('nl','Nederlands',true,'nl');
 
         $section1=(new Section())
             ->withTitle("About yourself")

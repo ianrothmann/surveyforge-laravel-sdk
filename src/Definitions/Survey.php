@@ -87,6 +87,7 @@ class Survey extends AbstractBuilder
         }
 
         $definition=[
+            'version' => '1.0',
             'title'=>$this->title,
             'sections'=>$this->sections->map(function(Section $section){
                return $section->build();
