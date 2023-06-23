@@ -9,6 +9,8 @@ use Surveyforge\Surveyforge\Definitions\Content\HtmlContent;
 use Surveyforge\Surveyforge\Definitions\Fields\CheckboxGroup;
 use Surveyforge\Surveyforge\Definitions\Fields\Dropdown;
 use Surveyforge\Surveyforge\Definitions\Fields\NumberRating;
+use Surveyforge\Surveyforge\Definitions\Fields\OptionsField;
+use Surveyforge\Surveyforge\Definitions\Fields\RadioGroup;
 use Surveyforge\Surveyforge\Definitions\Fields\TextArea;
 use Surveyforge\Surveyforge\Definitions\Fields\TextInput;
 use Surveyforge\Surveyforge\Definitions\Predefined\AbstractPredefinedBuilder;
@@ -57,7 +59,36 @@ class DemoSurvey extends AbstractPredefinedBuilder
                 ->withQuestionText('I am a pet person')
                 ->withAnswer((new SingleAnswerLayout())
                     ->withField((new NumberRating('rate_self'))->withRange(1,10,"Not at all","Very much"))
-                ));
+                ))
+                ->addQuestion((new VerticalQuestion('football_team'))
+                ->withQuestionText('Which football team do you support?')
+                ->withAnswer((new SingleAnswerLayout())
+                    ->withField((new OptionsField('team'))
+                        ->addOption('Ajax','ajax')
+                        ->addOption('PSV','psv')
+                        ->addOption('Feyenoord','feyenoord')
+                        ->addOption('AZ','az')
+                        ->addOption('FC Utrecht','utrecht')
+                        ->addOption('FC Twente','twente')
+                        ->addOption('FC Groningen','groningen')
+                        ->addOption('FC Emmen','emmen')
+                        ->addOption('FC Heerenveen','heerenveen')
+                        ->addOption('FC Den Haag','denhaag')
+                        ->addOption('FC VVV','vvv')
+                    )
+                )
+
+                )->addQuestion((new VerticalQuestion('rugby_team'))
+                ->withQuestionText('Which rugby team do you support?')
+                ->withAnswer((new SingleAnswerLayout())
+                    ->withField((new RadioGroup('team','Which rugby team do you support?'))
+                        ->addOption('France','france')
+                        ->addOption('England','england')
+                        ->addOption('Ireland','ireland')
+                        ->addOption('Scotland','scotland')
+                        ->addOption('Wales','wales')
+                    ))
+                );
 
         $section2=(new Section())
             ->withTitle("Your feelings towards pets")
