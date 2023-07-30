@@ -49,13 +49,13 @@ class SurveyStateHandler
         return self::fromSurveyDefinitionObject($survey->build());
     }
 
-    public function setAnswerObject(array $answers)
+    public function setAnswerObject($answers)
     {
         $this->answerObject=$answers;
         return $this;
     }
 
-    public function setAnswersFromRefs(array $answers)
+    public function setAnswersFromRefs($answers)
     {
         foreach ($answers as $ref=>$answer){
             $this->setAnswer($ref,$answer);
