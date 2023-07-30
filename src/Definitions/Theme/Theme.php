@@ -31,64 +31,63 @@ class Theme extends AbstractBuilder
         $this->otherLogos=collect();
     }
 
-
-    protected function withPrimaryColor($color)
+    public function withPrimaryColor($color)
     {
         $this->primary=$color;
         return $this;
     }
 
-    protected function withSecondaryColor($color)
+    public function withSecondaryColor($color)
     {
         $this->secondary=$color;
         return $this;
     }
 
-    protected function withAccentColor($color)
+    public function withAccentColor($color)
     {
         $this->accent=$color;
         return $this;
     }
 
-    protected function withInfoColor($color)
+    public function withInfoColor($color)
     {
         $this->info=$color;
         return $this;
     }
 
-    protected function withErrorColor($color)
+    public function withErrorColor($color)
     {
         $this->error=$color;
         return $this;
     }
 
-    protected function withWarningColor($color)
+    public function withWarningColor($color)
     {
         $this->warning=$color;
         return $this;
     }
 
-    protected function withSuccessColor($color)
+    public function withSuccessColor($color)
     {
         $this->success=$color;
         return $this;
     }
 
-    protected function setIconUrl($iconOnLightUrl, $iconOnDarkUrl=null)
+    public function setIconUrl($iconOnLightUrl, $iconOnDarkUrl=null)
     {
         $this->iconOnDarkUrl=$iconOnDarkUrl;
         $this->iconOnLightUrl=$iconOnLightUrl;
         return $this;
     }
 
-    protected function setLogoUrl($iconOnLightUrl, $iconOnDarkUrl=null)
+    public function setLogoUrl($iconOnLightUrl, $iconOnDarkUrl=null)
     {
         $this->logoOnDarkUrl=$iconOnDarkUrl;
         $this->logoOnLightUrl=$iconOnLightUrl;
         return $this;
     }
 
-    protected function addOtherLogo($logoUrl)
+    public function addOtherLogo($logoUrl)
     {
         $this->otherLogos->add($logoUrl);
         return $this;

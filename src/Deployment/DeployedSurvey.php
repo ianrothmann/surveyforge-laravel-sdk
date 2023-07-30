@@ -131,6 +131,16 @@ class DeployedSurvey
         return $this->surveyData->get('bot_id');
     }
 
+    public function getCompletedAt()
+    {
+        return $this->surveyData->get('completed_at');
+    }
+
+    public function getStartedAt()
+    {
+        return $this->surveyData->get('started_at');
+    }
+
     public static function find($surveyId)
     {
         $model=new self($surveyId);
