@@ -49,7 +49,7 @@ class SurveyFlowCreator
             'warnings' => $this->warnings,
             'theme' => $this->theme->toArray(),
             'text' => $this->text->toArray(),
-            'options' => $this->getOptions()->toArray(),
+            'options' => $this->getOptions(),
         ]);
     }
 
