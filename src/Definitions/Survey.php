@@ -22,6 +22,10 @@ class Survey extends AbstractBuilder
 
     protected ?Theme $theme=null;
 
+    protected $activityProctoringEnabled = false;
+
+    protected $timeLimitSeconds = null;
+
 
     public function __construct()
     {
@@ -75,6 +79,21 @@ class Survey extends AbstractBuilder
         return $this;
     }
 
+    public function setTimeLimit($timeLimitInSeconds)
+    {
+        if($timeLimitInSeconds && (!is_int($timeLimitInSeconds) || $timeLimitInSeconds<30)){
+            throw new \InvalidArgumentException('Time limit must be an integer in seconds larger than 30');
+        }
+        $this->timeLimitSeconds = $timeLimitInSeconds;
+        return $this;
+    }
+
+    public function enableActivityProctoring()
+    {
+        $this->activityProctoringEnabled = true;
+        return $this;
+    }
+
     public function toArray()
     {
         $this->fillDefaults();
@@ -103,7 +122,11 @@ class Survey extends AbstractBuilder
             })->toArray(),
             'theme'=>$this->theme->build(),
             'languages'=>$languages,
-            'text'=> $text
+            'text'=> $text,
+            'options'=> [
+                'activity_proctoring_enabled' => $this->activityProctoringEnabled,
+                'time_limit_seconds' => $this->timeLimitSeconds
+            ]
         ];
 
         return $definition;
