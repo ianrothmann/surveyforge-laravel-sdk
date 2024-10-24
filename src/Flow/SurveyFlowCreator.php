@@ -49,7 +49,13 @@ class SurveyFlowCreator
             'warnings' => $this->warnings,
             'theme' => $this->theme->toArray(),
             'text' => $this->text->toArray(),
+            'options' => $this->getOptions()->toArray(),
         ]);
+    }
+
+    protected function getOptions()
+    {
+        return collect($this->definition->get('options'));
     }
 
     protected function getTruncatedSurvey()
