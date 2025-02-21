@@ -14,6 +14,7 @@ class DeployedSurvey
     public $surveyId;
     protected $surveyData;
     protected $answerData;
+    protected $eventData;
     protected $dirty;
     protected $redirectDisabled=false;
 
@@ -84,6 +85,11 @@ class DeployedSurvey
     public function getAnswers()
     {
         return $this->answerData;
+    }
+
+    public function getEvents()
+    {
+        return $this->eventData;
     }
 
     public function getAnswersDot()
@@ -183,6 +189,7 @@ class DeployedSurvey
             $this->surveyData['definition']=$definition;
             $this->surveyId=$surveyData['id'];
             $this->answerData=collect(collect($data)->get('answers'));
+            $this->eventData=collect(collect($data)->get('events'));
         }else{
             throw new \Exception('Survey data is not valid');
         }

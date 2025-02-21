@@ -85,14 +85,15 @@ it('can evaluate a in_array',function(){
 it('can create a survey on surveyforge server', function(){
 
     $survey=\Surveyforge\Surveyforge\Definitions\Predefined\Surveys\DemoSurvey::get()
-        ->enableActivityProctoring()
+        //->enableActivityProctoring()
+        ->enableActivityMonitoring()
         ->setTimeLimit(300);
 
     //$creator = new \Surveyforge\Surveyforge\Flow\SurveyFlowCreator($survey->build());
     //dd($creator->get());
 
     $deployedSurvey=new \Surveyforge\Surveyforge\Deployment\DeployedSurvey();
-    $deployedSurvey->onConnection('http://localhost:8021','PJ4Zuj5l4Tt9O61cieEeaqzKuWDqpJKE05rTWrm3');
+    $deployedSurvey->onConnection('http://localhost:8023','PJ4Zuj5l4Tt9O61cieEeaqzKuWDqpJKE05rTWrm3');
     $deployedSurvey->setDefinition($survey->build());
     $deployedSurvey->setSurvey($survey);
     $deployedSurvey->redirectTo('https://google.com');

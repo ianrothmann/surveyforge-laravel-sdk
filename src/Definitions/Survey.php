@@ -23,6 +23,7 @@ class Survey extends AbstractBuilder
     protected ?Theme $theme=null;
 
     protected $activityProctoringEnabled = false;
+    protected $activityMonitoringEnabled = true;
 
     protected $timeLimitSeconds = null;
 
@@ -94,6 +95,12 @@ class Survey extends AbstractBuilder
         return $this;
     }
 
+    public function enableActivityMonitoring()
+    {
+        $this->activityMonitoringEnabled = true;
+        return $this;
+    }
+
     public function toArray()
     {
         $this->fillDefaults();
@@ -125,6 +132,7 @@ class Survey extends AbstractBuilder
             'text'=> $text,
             'options'=> [
                 'activity_proctoring_enabled' => $this->activityProctoringEnabled,
+                'activity_monitoring_enabled' => $this->activityMonitoringEnabled,
                 'time_limit_seconds' => $this->timeLimitSeconds
             ]
         ];
