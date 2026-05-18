@@ -57,6 +57,12 @@ class DeployedSurvey
         return $this;
     }
 
+    public function notifyWhenProctoringVideosAreAvailable($url)
+    {
+        $this->dirty->put('webhook_on_proctoring_videos_available',$url);
+        return $this;
+    }
+
     public function redirectTo($url)
     {
         $this->dirty->put('redirect_to',$url);
@@ -130,6 +136,11 @@ class DeployedSurvey
     public function getCompleteNotificationUrl()
     {
         return $this->surveyData->get('webhook_on_complete');
+    }
+
+    public function getProctoringVideosAvailableNotificationUrl()
+    {
+        return $this->surveyData->get('webhook_on_proctoring_videos_available');
     }
 
     public function getBotId()
