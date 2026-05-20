@@ -17,12 +17,38 @@ class StubbedRedirectRequestHandler extends RedirectRequestHandler
 {
     protected function handleSecurityValidation()
     {
-        // bypass
+        // bypass — assume signature is good for these tests
+        return null;
     }
 
     protected function getDeployedSurvey(): DeployedSurvey
     {
         return new DeployedSurvey($this->request->get('survey_id'));
+    }
+}
+
+/**
+ * Variant that simulates a failed signature verification, so we can prove
+ * handle() actually short-circuits when onSecurityValidationFailed returns
+ * a response.
+ */
+class FailingSecurityRedirectRequestHandler extends StubbedRedirectRequestHandler
+{
+    public bool $pauseRan = false;
+
+    protected function handleSecurityValidation()
+    {
+        // Mirror the production failure path: invoke the configured callback
+        // and return its response so handle() can bubble it up. If no callback
+        // is configured, abort(401) like production does.
+        $callable = $this->onSecurityFailed;
+        if ($callable && is_callable($callable)) {
+            return call_user_func($callable);
+        }
+        if ($callable) {
+            return \Illuminate\Support\Facades\Redirect::to($callable);
+        }
+        abort(401);
     }
 }
 
@@ -170,6 +196,28 @@ it('dispatches SurveyForgePauseEvent with the redirect context populated', funct
             && $event->context->reasonDetail() === 'face_not_visible'
             && $event->context->isSecurityRelated() === true;
     });
+});
+
+it('short-circuits to the security-failed handler instead of dispatching pause/complete', function () {
+    $pauseRan = false;
+    $securityResponse = new \Illuminate\Http\Response('blocked', 401);
+
+    $request = makeRedirectRequest([
+        'action' => 'pause',
+        'reason' => 'proctoring_violation',
+    ]);
+
+    $response = (new FailingSecurityRedirectRequestHandler($request))
+        ->onSecurityValidationFailed(function () use ($securityResponse) {
+            return $securityResponse;
+        })
+        ->onPause(function () use (&$pauseRan) {
+            $pauseRan = true;
+        })
+        ->handle();
+
+    expect($response)->toBe($securityResponse);
+    expect($pauseRan)->toBeFalse();
 });
 
 it('dispatches SurveyForgeCompleteEvent with context for timeout', function () {

@@ -77,7 +77,10 @@ class RedirectRequestHandler
             abort(400);
         }
 
-        $this->handleSecurityValidation();
+        $securityResponse = $this->handleSecurityValidation();
+        if ($securityResponse !== null) {
+            return $securityResponse;
+        }
 
         $context = new RedirectContext(
             $this->request->input('action'),
@@ -175,11 +178,12 @@ class RedirectRequestHandler
             if ($this->onSecurityFailed && is_callable($this->onSecurityFailed)) {
                 return call_user_func($this->onSecurityFailed);
             } elseif ($this->onSecurityFailed) {
-                Redirect::to($this->onSecurityFailed);
-            } else {
-                abort(401);
+                return Redirect::to($this->onSecurityFailed);
             }
+            abort(401);
         }
+
+        return null;
     }
 
     protected function makeVerifier(): SurveyforgeVerifier
