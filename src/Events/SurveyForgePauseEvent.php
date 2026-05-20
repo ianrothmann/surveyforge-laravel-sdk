@@ -4,6 +4,7 @@ namespace Surveyforge\Surveyforge\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Surveyforge\Surveyforge\Deployment\DeployedSurvey;
+use Surveyforge\Surveyforge\Request\RedirectContext;
 
 class SurveyForgePauseEvent
 {
@@ -11,15 +12,11 @@ class SurveyForgePauseEvent
 
     public DeployedSurvey $survey;
 
-    /**
-     * Create a new event instance.
-     *
-     * @param  DeployedSurvey  $survey
-     * @return void
-     */
-    public function __construct(DeployedSurvey $survey)
+    public ?RedirectContext $context;
+
+    public function __construct(DeployedSurvey $survey, ?RedirectContext $context = null)
     {
         $this->survey = $survey;
+        $this->context = $context;
     }
-
 }
